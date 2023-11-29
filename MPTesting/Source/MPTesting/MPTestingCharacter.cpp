@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MPTestingCharacter.h"
 #include "Camera/CameraComponent.h"
@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -62,6 +63,36 @@ void AMPTestingCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+}
+
+void AMPTestingCharacter::OpenLobby()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		// D:/UnrealProjects/MultiplayerShooter/MultiplayerShooter/MPTesting/Content/ThirdPerson/Maps/Lobby.umap
+		// 用`/Game` 可以代替项目资源路径
+		// `?listen` 和前面蓝图保持一致，作为监听服务器实例
+		World->ServerTravel("/Game/ThirdPerson/Maps/Lobby?listen");
+	}
+}
+
+void AMPTestingCharacter::CallOpenLevel(const FString& IPAddress)
+{
+	UGameplayStatics::OpenLevel(this, *IPAddress);
+}
+
+void AMPTestingCharacter::CallClientTravel(const FString& IPAddress)
+{
+	UGameInstance* GameInstance = GetGameInstance();
+	if (GameInstance)
+	{
+		APlayerController* PlayerController = GameInstance->GetFirstLocalPlayerController();
+		if (PlayerController)
+		{
+			PlayerController->ClientTravel(IPAddress, ETravelType::TRAVEL_Absolute);
 		}
 	}
 }
