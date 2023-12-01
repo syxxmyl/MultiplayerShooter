@@ -5,11 +5,12 @@
 #include "Components/Button.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "OnlineSubsystem.h"
 
-
-void UMenu::MenuSetup(int32 NumOfPublicConnection /*= 4*/, FString TypeOfMatch /*= FString(TEXT("FreeForAll"))*/)
+void UMenu::MenuSetup(int32 NumOfPublicConnection /*= 4*/, int32 NumOfMaxSearchResults /*= 10000*/, FString TypeOfMatch /*= FString(TEXT("FreeForAll"))*/)
 {
 	NumPublicConnections = NumOfPublicConnection;
+	MaxSearchResults = NumOfMaxSearchResults;
 	MatchType = TypeOfMatch;
 
 	AddToViewport();
@@ -99,12 +100,75 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 
 void UMenu::OnFindSessions(const TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful)
 {
+	if (!MultiplayerSessionSubsystem)
+	{
+		return;
+	}
 
+	if (bWasSuccessful)
+	{
+		for (auto Result : SearchResults)
+		{
+			FString SettingsValue;
+			Result.Session.SessionSettings.Get(FName("MatchType"), SettingsValue);
+			if (SettingsValue == MatchType)
+			{
+				MultiplayerSessionSubsystem->JoinSession(Result);
+			}
+		}
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				15.0f,
+				FColor::Red,
+				FString(TEXT("find sessions failed."))
+			);
+		}
+	}
 }
 
 void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 {
-
+	if (Result == EOnJoinSessionCompleteResult::Success)
+	{
+		IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+		if (Subsystem)
+		{
+			IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+			if (SessionInterface.IsValid())
+			{
+				FString Address;
+				if (SessionInterface->GetResolvedConnectString(NAME_GameSession, Address))
+				{
+					UGameInstance* GameInstance = GetGameInstance();
+					if (GameInstance)
+					{
+						APlayerController* PlayerController = GameInstance->GetFirstLocalPlayerController();
+						if (PlayerController)
+						{
+							PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+						}
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				15.0f,
+				FColor::Red,
+				FString(TEXT("join sessions failed."))
+			);
+		}
+	}
 }
 
 void UMenu::OnDestroySession(bool bWasSuccessful)
@@ -172,5 +236,10 @@ void UMenu::JoinButtonClicked()
 			FColor::Yellow,
 			FString(TEXT("Join Button Clicked"))
 		);
+	}
+
+	if (MultiplayerSessionSubsystem)
+	{
+		MultiplayerSessionSubsystem->FindSessions(MaxSearchResults);
 	}
 }
