@@ -28,17 +28,18 @@ protected:
 	virtual void NativeDestruct() override;
 
 private:
+	UFUNCTION()
+	void HostButtonClicked();
+
+	UFUNCTION()
+	void JoinButtonClicked();
+
 	UPROPERTY(meta = (BindWidget))
 	UButton* HostButton;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* JoinButton;
 
-	UFUNCTION()
-	void HostButtonClicked();
-
-	UFUNCTION()
-	void JoinButtonClicked();
 
 	void MenuTearDown();
 
@@ -46,4 +47,7 @@ private:
 
 	int32 NumPublicConnections{ 4 };
 	FString MatchType{ TEXT("FreeForAll") };
+
+	UFUNCTION()
+	void OnCreateSession(bool bWasSuccessful);
 };

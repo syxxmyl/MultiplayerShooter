@@ -33,6 +33,11 @@ void UMenu::MenuSetup(int32 NumOfPublicConnection /*= 4*/, FString TypeOfMatch /
 	{
 		MultiplayerSessionSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>();
 	}
+
+	if (MultiplayerSessionSubsystem)
+	{
+		MultiplayerSessionSubsystem->MultiplayerOnCreateSessionComplete.AddDynamic(this, &ThisClass::OnCreateSession);
+	}
 }
 
 void UMenu::MenuTearDown()
@@ -48,6 +53,40 @@ void UMenu::MenuTearDown()
 			FInputModeGameOnly InputModeData;
 			PlayerController->SetInputMode(InputModeData);
 			PlayerController->SetShowMouseCursor(false);
+		}
+	}
+}
+
+void UMenu::OnCreateSession(bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				15.0f,
+				FColor::Yellow,
+				FString(TEXT("create session success."))
+			);
+		}
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			World->ServerTravel(FString("/Game/ThirdPerson/Maps/Lobby?listen"));
+		}
+	}
+	else
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				15.0f,
+				FColor::Red,
+				FString(TEXT("create session failed."))
+			);
 		}
 	}
 }
@@ -94,12 +133,6 @@ void UMenu::HostButtonClicked()
 	if (MultiplayerSessionSubsystem)
 	{
 		MultiplayerSessionSubsystem->CreateSession(NumPublicConnections, MatchType);
-
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			World->ServerTravel(FString("/Game/ThirdPerson/Maps/Lobby?listen"));
-		}
 	}
 }
 
