@@ -87,6 +87,8 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 	}
 	else
 	{
+		HostButton->SetIsEnabled(true);
+
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(
@@ -130,6 +132,11 @@ void UMenu::OnFindSessions(const TArray<FOnlineSessionSearchResult>& SearchResul
 			);
 		}
 	}
+
+	if (!bWasSuccessful || SearchResults.Num() == 0)
+	{
+		JoinButton->SetIsEnabled(true);
+	}
 }
 
 void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
@@ -160,6 +167,8 @@ void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 	}
 	else
 	{
+		JoinButton->SetIsEnabled(true);
+
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(
@@ -211,6 +220,8 @@ void UMenu::NativeDestruct()
 
 void UMenu::HostButtonClicked()
 {
+	HostButton->SetIsEnabled(false);
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(
@@ -229,6 +240,8 @@ void UMenu::HostButtonClicked()
 
 void UMenu::JoinButtonClicked()
 {
+	JoinButton->SetIsEnabled(false);
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(
