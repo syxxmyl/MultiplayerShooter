@@ -7,11 +7,12 @@
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 
-void UMenu::MenuSetup(int32 NumOfPublicConnection /*= 4*/, int32 NumOfMaxSearchResults /*= 10000*/, FString TypeOfMatch /*= FString(TEXT("FreeForAll"))*/)
+void UMenu::MenuSetup(int32 NumOfPublicConnection /*= 4*/, int32 NumOfMaxSearchResults /*= 10000*/, FString TypeOfMatch /*= FString(TEXT("FreeForAll"))*/, FString LobbyPath /*= FString(TEXT("/Game/ThirdPerson/Maps/Lobby"))*/)
 {
 	NumPublicConnections = NumOfPublicConnection;
 	MaxSearchResults = NumOfMaxSearchResults;
 	MatchType = TypeOfMatch;
+	PathToLobby = FString::Printf(TEXT("%s?listen"), *LobbyPath);
 
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
@@ -81,7 +82,7 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 		UWorld* World = GetWorld();
 		if (World)
 		{
-			World->ServerTravel(FString("/Game/ThirdPerson/Maps/Lobby?listen"));
+			World->ServerTravel(PathToLobby);
 		}
 	}
 	else
