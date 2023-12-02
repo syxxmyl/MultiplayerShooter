@@ -3,6 +3,8 @@ MPTesting/.vs/
 
 MenuSystem/.vs/
 
+Blaster/.vs/
+
 
 # Compiled Object files
 *.slo
@@ -58,6 +60,9 @@ MPTesting/SourceArt/**/*.tga
 MenuSystem/SourceArt/**/*.png
 MenuSystem/SourceArt/**/*.tga
 
+Blaster/SourceArt/**/*.png
+Blaster/SourceArt/**/*.tga
+
 
 # Binary Files
 MPTesting/Binaries/*
@@ -66,10 +71,16 @@ MPTesting/Plugins/*/Binaries/*
 MenuSystem/Binaries/*
 MenuSystem/Plugins/*/Binaries/*
 
+Blaster/Binaries/*
+Blaster/Plugins/*/Binaries/*
+
+
 # Builds
 MPTesting/Build/*
 
 MenuSystem/Build/*
+
+Blaster/Build/*
 
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
@@ -81,11 +92,17 @@ MPTesting/Build/*/**
 MenuSystem/Build/*/**
 !MenuSystem/Build/*/PakBlacklist*.txt
 
+!Blaster/Build/*/
+Blaster/Build/*/**
+!Blaster/Build/*/PakBlacklist*.txt
+
 
 # Don't ignore icon files in Build
 !MPTesting/Build/**/*.ico
 
 !MenuSystem/Build/**/*.ico
+
+!Blaster/Build/**/*.ico
 
 
 # Built data for maps
@@ -97,6 +114,8 @@ MPTesting/Saved/*
 
 MenuSystem/Saved/*
 
+Blaster/Saved/*
+
 
 # Compiled source files for the engine to use
 MPTesting/Intermediate/*
@@ -105,8 +124,13 @@ MPTesting/Plugins/*/Intermediate/*
 MenuSystem/Intermediate/*
 MenuSystem/Plugins/*/Intermediate/*
 
+Blaster/Intermediate/*
+Blaster/Plugins/*/Intermediate/*
+
 
 # Cache files for the editor to use
 MPTesting/DerivedDataCache/*
 
 MenuSystem/DerivedDataCache/*
+
+Blaster/DerivedDataCache/*
