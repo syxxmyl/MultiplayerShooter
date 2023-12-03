@@ -3,6 +3,7 @@
 
 #include "OverheadWidget.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/PlayerState.h"
 
 void UOverheadWidget::SetDisplayText(FString TextToDisplay)
 {
@@ -15,26 +16,33 @@ void UOverheadWidget::SetDisplayText(FString TextToDisplay)
 void UOverheadWidget::ShowPlayerNetRole(APawn* InPawn)
 {
 	ENetRole LocalRole = InPawn->GetLocalRole();
-	FString Role;
+	FString NetRoleMode;
 	switch (LocalRole)
 	{
 	case ENetRole::ROLE_None:
-		Role = FString("None");
+		NetRoleMode = FString("None");
 		break;
 	case ENetRole::ROLE_SimulatedProxy:
-		Role = FString("Simulated Proxy");
+		NetRoleMode = FString("Simulated Proxy");
 		break;
 	case ENetRole::ROLE_AutonomousProxy:
-		Role = FString("Autonomous Proxy");
+		NetRoleMode = FString("Autonomous Proxy");
 		break;
 	case ENetRole::ROLE_Authority:
-		Role = FString("Authority");
+		NetRoleMode = FString("Authority");
 		break;
 	default:
 		break;
 	}
 
-	FString LocalRoleString = FString::Printf(TEXT("Local Role: %s"), *Role);
+	FString RoleName;
+	APlayerState* PlayerState = InPawn->GetPlayerState();
+	if (PlayerState)
+	{
+		RoleName = PlayerState->GetPlayerName();
+	}
+
+	FString LocalRoleString = FString::Printf(TEXT("Local Role: %s\nRole Name: %s"), *NetRoleMode, *RoleName);
 	SetDisplayText(LocalRoleString);
 }
 
