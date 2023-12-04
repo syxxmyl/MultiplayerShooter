@@ -37,6 +37,9 @@ protected:
 	void LookUp(float Value);
 	void EquipButtonPressed();
 
+	UFUNCTION(Server, Reliable)
+	void ServerEquipButtonPressed();
+
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;

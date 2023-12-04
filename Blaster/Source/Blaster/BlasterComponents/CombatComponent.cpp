@@ -35,7 +35,6 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-	EquippedWeapon->ShowPickupWidget(false);
 	EquippedWeapon->SetOwner(Character);
 	
 	const USkeletalMeshSocket* HandSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket"));
@@ -44,4 +43,3 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 		HandSocket->AttachActor(EquippedWeapon, Character->GetMesh());
 	}
 }
-
