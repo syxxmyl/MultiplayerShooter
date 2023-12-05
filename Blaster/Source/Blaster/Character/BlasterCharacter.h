@@ -41,6 +41,8 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();
 
+	void CrouchButtonPressed();
+
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;
