@@ -19,6 +19,10 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	}
 }
 
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -39,11 +43,20 @@ void UCombatComponent::SetAiming(bool bAiming)
 {
 	bIsAiming = bAiming;
 	ServerSetAiming(bAiming);
+
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = bAiming ? AimWalkSpeed : BaseWalkSpeed;
+	}
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
 {
 	bIsAiming = bAiming;
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = bAiming ? AimWalkSpeed : BaseWalkSpeed;
+	}
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
