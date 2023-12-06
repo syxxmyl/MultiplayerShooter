@@ -79,4 +79,5 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		LeftHandTransform.SetRotation(FQuat(OutRotation));
 	}
 	
+	TurningInPlace = BlasterCharacter->GetTurningInPlace();
 }

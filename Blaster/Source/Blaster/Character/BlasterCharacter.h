@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Blaster/BlasterTypes/TurningInPlace.h"
 #include "BlasterCharacter.generated.h"
 
 
@@ -34,6 +35,8 @@ public:
 	FORCEINLINE float GetAimOffsetPitch() const { return AimOffset_Pitch; }
 
 	AWeapon* GetEquippedWeapon();
+
+	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -78,4 +81,6 @@ private:
 
 	FRotator StartingAimRotation;
 
+	ETurningInPlace TurningInPlace;
+	void UpdateTurningInPlaceState(float DeltaTime);
 };

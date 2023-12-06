@@ -39,6 +39,8 @@ ABlasterCharacter::ABlasterCharacter()
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 }
 
 void ABlasterCharacter::PostInitializeComponents()
@@ -125,6 +127,11 @@ void ABlasterCharacter::EquipButtonPressed()
 	}
 }
 
+void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
+{
+	EquipButtonPressed();
+}
+
 void ABlasterCharacter::CrouchButtonPressed()
 {
 	if (bIsCrouched)
@@ -151,48 +158,6 @@ void ABlasterCharacter::AimButtonReleased()
 	{
 		Combat->SetAiming(false);
 	}
-}
-
-void ABlasterCharacter::AimOffset(float DeltaTime)
-{
-	if (Combat && Combat->EquippedWeapon == nullptr)
-	{
-		return;
-	}
-
-	FVector Velocity = GetVelocity();
-	Velocity.Z = 0.0f;
-	float speed = Velocity.Size();
-	bool bIsInAir = GetCharacterMovement()->IsFalling();
-
-	if (speed == 0.0f && !bIsInAir)
-	{
-		FRotator AimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
-		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, StartingAimRotation);
-		AimOffset_Yaw = FMath::Clamp(DeltaAimRotation.Yaw, -90.0f, 90.0f);
-		bUseControllerRotationYaw = false;
-	}
-
-	if (speed > 0.0f || bIsInAir)
-	{
-		StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
-		AimOffset_Yaw = 0.0f;
-		bUseControllerRotationYaw = true;
-	}
-
-	AimOffset_Pitch = GetBaseAimRotation().Pitch;
-	if (AimOffset_Pitch > 90.0f && !IsLocallyControlled())
-	{
-		FVector2D InRange(270.0f, 360.0f);
-		FVector2D OutRange(-90.0f, 0.0f);
-		AimOffset_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AimOffset_Pitch);
-	}
-
-}
-
-void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
-{
-	EquipButtonPressed();
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -243,4 +208,56 @@ AWeapon* ABlasterCharacter::GetEquippedWeapon()
 	}
 
 	return Combat->EquippedWeapon;
+}
+
+void ABlasterCharacter::AimOffset(float DeltaTime)
+{
+	if (Combat && Combat->EquippedWeapon == nullptr)
+	{
+		return;
+	}
+
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0.0f;
+	float speed = Velocity.Size();
+	bool bIsInAir = GetCharacterMovement()->IsFalling();
+
+	if (speed == 0.0f && !bIsInAir)
+	{
+		FRotator AimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
+		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, StartingAimRotation);
+		AimOffset_Yaw = DeltaAimRotation.Yaw;
+		bUseControllerRotationYaw = false;
+		UpdateTurningInPlaceState(DeltaTime);
+	}
+
+	if (speed > 0.0f || bIsInAir)
+	{
+		StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
+		AimOffset_Yaw = 0.0f;
+		bUseControllerRotationYaw = true;
+
+		TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+	}
+
+	AimOffset_Pitch = GetBaseAimRotation().Pitch;
+	if (AimOffset_Pitch > 90.0f && !IsLocallyControlled())
+	{
+		FVector2D InRange(270.0f, 360.0f);
+		FVector2D OutRange(-90.0f, 0.0f);
+		AimOffset_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AimOffset_Pitch);
+	}
+
+}
+
+void ABlasterCharacter::UpdateTurningInPlaceState(float DeltaTime)
+{
+	if (AimOffset_Yaw > 90.0f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Right;
+	}
+	else if (AimOffset_Yaw < -90.0f)
+	{
+		TurningInPlace = ETurningInPlace::ETIP_Left;
+	}
 }
