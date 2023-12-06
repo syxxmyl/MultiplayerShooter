@@ -30,6 +30,9 @@ public:
 	bool IsWeaponEquipped();
 	bool IsAiming();
 
+	FORCEINLINE float GetAimOffsetYaw() const { return AimOffset_Yaw; }
+	FORCEINLINE float GetAimOffsetPitch() const { return AimOffset_Pitch; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -46,6 +49,8 @@ protected:
 
 	void AimButtonPressed();
 	void AimButtonReleased();
+
+	void AimOffset(float DeltaTime);
 
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -65,4 +70,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UCombatComponent* Combat;
+
+	float AimOffset_Yaw;
+	float AimOffset_Pitch;
+	FRotator StartingAimRotation;
+
 };
