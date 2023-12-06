@@ -73,6 +73,7 @@ private:
 
 	float AimOffset_Yaw;
 	float AimOffset_Pitch;
+
 	FRotator StartingAimRotation;
 
 };

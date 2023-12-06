@@ -181,6 +181,12 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
 	}
 
 	AimOffset_Pitch = GetBaseAimRotation().Pitch;
+	if (AimOffset_Pitch > 90.0f && !IsLocallyControlled())
+	{
+		FVector2D InRange(270.0f, 360.0f);
+		FVector2D OutRange(-90.0f, 0.0f);
+		AimOffset_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AimOffset_Pitch);
+	}
 
 }
 
