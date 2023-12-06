@@ -8,6 +8,7 @@
 
 
 class ABlasterCharacter;
+class AWeapon;
 
 /**
  * 
@@ -58,4 +59,8 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	float AimOffset_Pitch;
+
+	AWeapon* EquippedWeapon;
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	FTransform LeftHandTransform;
 };
