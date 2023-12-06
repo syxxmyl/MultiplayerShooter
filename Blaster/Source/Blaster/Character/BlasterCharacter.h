@@ -83,4 +83,6 @@ private:
 
 	ETurningInPlace TurningInPlace;
 	void UpdateTurningInPlaceState(float DeltaTime);
+
+	float InterpAimOffset_Yaw;
 };

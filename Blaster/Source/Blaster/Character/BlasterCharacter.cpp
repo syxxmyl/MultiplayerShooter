@@ -227,7 +227,12 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
 		FRotator AimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, StartingAimRotation);
 		AimOffset_Yaw = DeltaAimRotation.Yaw;
-		bUseControllerRotationYaw = false;
+
+		if (TurningInPlace == ETurningInPlace::ETIP_NotTurning)
+		{
+			InterpAimOffset_Yaw = AimOffset_Yaw;
+		}
+		bUseControllerRotationYaw = true;
 		UpdateTurningInPlaceState(DeltaTime);
 	}
 
@@ -259,5 +264,16 @@ void ABlasterCharacter::UpdateTurningInPlaceState(float DeltaTime)
 	else if (AimOffset_Yaw < -90.0f)
 	{
 		TurningInPlace = ETurningInPlace::ETIP_Left;
+	}
+
+	if (TurningInPlace != ETurningInPlace::ETIP_NotTurning)
+	{
+		InterpAimOffset_Yaw = FMath::FInterpTo(InterpAimOffset_Yaw, 0.0f, DeltaTime, 5.0f);
+		AimOffset_Yaw = InterpAimOffset_Yaw;
+		if (FMath::Abs(AimOffset_Yaw) < 15.0f)
+		{
+			TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+			StartingAimRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.0f);
+		}
 	}
 }
