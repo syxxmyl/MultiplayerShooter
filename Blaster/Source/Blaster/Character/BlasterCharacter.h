@@ -13,6 +13,7 @@ class UCameraComponent;
 class UWidgetComponent;
 class AWeapon;
 class UCombatComponent;
+class UAnimMontage;
 
 
 UCLASS()
@@ -38,6 +39,8 @@ public:
 
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 
+	void PlayFireMontage(bool bAiming);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -58,6 +61,9 @@ protected:
 	void AimOffset(float DeltaTime);
 
 	virtual void Jump() override;
+
+	void FireButtonPressed();
+	void FireButtonReleased();
 
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -87,4 +93,7 @@ private:
 	void UpdateTurningInPlaceState(float DeltaTime);
 
 	float InterpAimOffset_Yaw;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* FireWeaponMontage;
 };
