@@ -63,4 +63,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float TraceLength{ 80000.0f };
+
+	FVector HitTarget;
 };
