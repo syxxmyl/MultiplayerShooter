@@ -11,6 +11,7 @@ class USkeletalMeshComponent;
 class USphereComponent;
 class UWidgetComponent;
 class UPrimitiveComponent;
+class UAnimationAsset;
 
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
@@ -36,6 +37,8 @@ public:
 
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 
+	void Fire();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -60,4 +63,7 @@ private:
 
 	UFUNCTION()
 	void OnRep_WeaponState();
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UAnimationAsset* FireAnimation;
 };
