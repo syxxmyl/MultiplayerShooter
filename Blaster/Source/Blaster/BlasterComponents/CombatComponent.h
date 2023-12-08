@@ -42,6 +42,8 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastFire();
 
+	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
+
 private:
 	ABlasterCharacter* Character;
 
@@ -58,4 +60,7 @@ private:
 	float AimWalkSpeed{ 400.0f };
 
 	bool bFireButtonPressed;
+
+	UPROPERTY(EditAnywhere)
+	float TraceLength{ 80000.0f };
 };
