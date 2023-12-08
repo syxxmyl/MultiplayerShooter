@@ -8,6 +8,7 @@
 
 
 class UBoxComponent;
+class UProjectileMovementComponent;
 
 UCLASS()
 class BLASTER_API AProjectile : public AActor
@@ -20,9 +21,11 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+private:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* CollisionBox;
 
-private:
-
+	UPROPERTY(EditAnywhere)
+	UProjectileMovementComponent* ProjectileMovementComponent;
 };
