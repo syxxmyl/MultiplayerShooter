@@ -70,4 +70,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float TraceLength{ 80000.0f };
+
+	float CrosshairVelocityFactor;
+	float CrosshairInAirFactor;
 };
