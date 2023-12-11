@@ -13,6 +13,7 @@ class UWidgetComponent;
 class UPrimitiveComponent;
 class UAnimationAsset;
 class ACasing;
+class UTexture2D;
 
 
 UENUM(BlueprintType)
@@ -40,6 +41,21 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 
 	virtual void Fire(const FVector& HitTarget);
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UTexture2D* CrosshairsCenter;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UTexture2D* CrosshairsLeft;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UTexture2D* CrosshairsRight;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UTexture2D* CrosshairsTop;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	UTexture2D* CrosshairsBottom;
 
 protected:
 	virtual void BeginPlay() override;
