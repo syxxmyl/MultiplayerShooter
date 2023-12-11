@@ -41,6 +41,8 @@ public:
 
 	void PlayFireMontage(bool bAiming);
 
+	FVector GetHitTarget() const;
+
 protected:
 	virtual void BeginPlay() override;
 

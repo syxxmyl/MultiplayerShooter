@@ -263,6 +263,16 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
 	}
 }
 
+FVector ABlasterCharacter::GetHitTarget() const
+{
+	if (!Combat)
+	{
+		return FVector();
+	}
+
+	return Combat->HitTarget;
+}
+
 void ABlasterCharacter::AimOffset(float DeltaTime)
 {
 	if (Combat && Combat->EquippedWeapon == nullptr)
