@@ -57,6 +57,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = Crosshairs)
 	UTexture2D* CrosshairsBottom;
 
+	UPROPERTY(EditAnywhere)
+	float ZoomedFOV = 30.0f;
+
+	UPROPERTY(EditAnywhere)
+	float ZoomInterpSpeed = 20.0f;
+
+	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
+	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
+
 protected:
 	virtual void BeginPlay() override;
 

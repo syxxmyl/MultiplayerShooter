@@ -26,6 +26,9 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	void EquipWeapon(AWeapon* WeaponToEquip);
 
+	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
+	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -75,4 +78,16 @@ private:
 	float CrosshairInAirFactor;
 
 	FVector HitTarget;
+
+	float DefaultFOV;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ZoomedFOV = 30.0f;
+
+	float CurrentFOV;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ZoomInterpSpeed = 20.0f;
+
+	void InterpFOV(float DeltaTime);
 };
