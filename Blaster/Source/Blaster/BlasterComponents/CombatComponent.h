@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Blaster/HUD/BlasterHUD.h"
 #include "CombatComponent.generated.h"
 
 
 class ABlasterCharacter;
 class AWeapon;
 class ABlasterPlayerController;
-class ABlasterHUD;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -92,4 +92,6 @@ private:
 	float ZoomInterpSpeed = 20.0f;
 
 	void InterpFOV(float DeltaTime);
+
+	FHUDPackage HUDPackage;
 };
