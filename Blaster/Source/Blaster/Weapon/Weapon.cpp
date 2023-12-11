@@ -10,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Casing.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "DrawDebugHelpers.h"
 
 
 AWeapon::AWeapon()
@@ -127,13 +128,20 @@ void AWeapon::Fire(const FVector& HitTarget)
 		if (AmmoEjectSocket)
 		{
 			FTransform SocketTransform = AmmoEjectSocket->GetSocketTransform(WeaponMesh);
+			FRotator SpawnRotation = SocketTransform.GetRotation().Rotator();
+			SpawnRotation.Roll += FMath::RandRange(-30.0f, 30.0f);
+			SpawnRotation.Pitch += FMath::RandRange(-30.0f, 30.0f);
+			SpawnRotation.Yaw += FMath::RandRange(-30.0f, 30.0f);
+
+			// DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), SocketTransform.GetLocation() + SpawnRotation.Vector() * 100, FColor::Blue, false, 10.0f, 0, 2.0f);
+
 			UWorld* World = GetWorld();
 			if (World)
 			{
 				World->SpawnActor<ACasing>(
 					CasingClass,
 					SocketTransform.GetLocation(),
-					SocketTransform.GetRotation().Rotator()
+					SpawnRotation
 				);
 			}
 		}
