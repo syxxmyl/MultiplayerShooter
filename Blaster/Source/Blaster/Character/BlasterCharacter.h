@@ -49,6 +49,9 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastHit();
 
+	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
+	virtual void OnRep_ReplicatedMovement() override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -72,6 +75,8 @@ protected:
 
 	void FireButtonPressed();
 	void FireButtonReleased();
+
+	void SimProxiesTurn();
 
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -114,4 +119,16 @@ private:
 	UAnimMontage* HitReactMontage;
 
 	void PlayHitReactMontage();
+
+	bool bRotateRootBone;
+	float TurnThreshold = 0.5f;
+	FRotator ProxyRotationLastFrame;
+	FRotator ProxyRotation;
+	float ProxyYaw;
+	void CalculateAO_Pitch();
+	float CalculateSpeed();
+	float TimeSinceLastMovementReplication;
+	
+	UPROPERTY(EditAnywhere)
+	float MovementReplicationThreshold = 0.25f;
 };

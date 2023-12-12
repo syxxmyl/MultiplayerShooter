@@ -99,4 +99,6 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		DrawDebugLine(GetWorld(), MuzzleTipTransform.GetLocation(), BlasterCharacter->GetHitTarget(), FColor::Orange);
 		*/
 	}
+
+	bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
 }
