@@ -46,6 +46,9 @@ public:
 
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastHit();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -106,4 +109,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float CameraThreshold = 200.0f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* HitReactMontage;
+
+	void PlayHitReactMontage();
 };

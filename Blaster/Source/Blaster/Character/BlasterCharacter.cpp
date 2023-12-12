@@ -12,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "BlasterAnimInstance.h"
+#include "Blaster/Blaster.h"
 
 
 ABlasterCharacter::ABlasterCharacter()
@@ -41,6 +42,7 @@ ABlasterCharacter::ABlasterCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
 
 	NetUpdateFrequency = 66.0f;
 	MinNetUpdateFrequency = 33.0f;
@@ -275,6 +277,11 @@ FVector ABlasterCharacter::GetHitTarget() const
 	return Combat->HitTarget;
 }
 
+void ABlasterCharacter::MulticastHit_Implementation()
+{
+	PlayHitReactMontage();
+}
+
 void ABlasterCharacter::AimOffset(float DeltaTime)
 {
 	if (Combat && Combat->EquippedWeapon == nullptr)
@@ -365,5 +372,21 @@ void ABlasterCharacter::HideCameraIfCharacterClose()
 		{
 			Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = false;
 		}
+	}
+}
+
+void ABlasterCharacter::PlayHitReactMontage()
+{
+	if (!Combat || !Combat->EquippedWeapon)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && HitReactMontage)
+	{
+		AnimInstance->Montage_Play(HitReactMontage);
+		FName SectionName("FromFront");
+		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
