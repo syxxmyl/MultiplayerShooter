@@ -13,6 +13,7 @@
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Camera/CameraComponent.h"
 #include "Blaster/Interfaces/InteractWithCrosshairsInterface.h"
+#include "TimerManager.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -88,19 +89,58 @@ void UCombatComponent::OnRep_EquippedWeapon()
 	}
 }
 
+void UCombatComponent::StartFireTimer()
+{
+	if (!EquippedWeapon || !Character)
+	{
+		return;
+	}
+
+	Character->GetWorldTimerManager().SetTimer(
+		FireTimer,
+		this,
+		&ThisClass::FireTimerFinished,
+		EquippedWeapon->FireDelay
+	);
+}
+
+void UCombatComponent::FireTimerFinished()
+{
+	if (!EquippedWeapon)
+	{
+		return;
+	}
+
+	bCanFire = true;
+	if (bFireButtonPressed && EquippedWeapon->bAutomatic)
+	{
+		Fire();
+	}
+}
+
+void UCombatComponent::Fire()
+{
+	if (!bCanFire)
+	{
+		return;
+	}
+
+	bCanFire = false;
+	ServerFire(HitTarget);
+	if (EquippedWeapon)
+	{
+		CrosshairShootingFactor = 0.75f;
+	}
+
+	StartFireTimer();
+}
+
 void UCombatComponent::FireButtonPressed(bool bPressed)
 {
 	bFireButtonPressed = bPressed;
 	if (bFireButtonPressed)
 	{
-		FHitResult HitResult;
-		TraceUnderCrosshairs(HitResult);
-		ServerFire(HitResult.ImpactPoint);
-
-		if (EquippedWeapon)
-		{
-			CrosshairShootingFactor = 0.75f;
-		}
+		Fire();
 	}
 }
 

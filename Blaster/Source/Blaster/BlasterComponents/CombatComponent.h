@@ -94,4 +94,12 @@ private:
 	void InterpFOV(float DeltaTime);
 
 	FHUDPackage HUDPackage;
+
+	FTimerHandle FireTimer;
+
+	bool bCanFire = true;
+
+	void StartFireTimer();
+	void FireTimerFinished();
+	void Fire();
 };
