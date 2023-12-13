@@ -509,6 +509,11 @@ void ABlasterCharacter::OnRep_Health()
 
 void ABlasterCharacter::Elim()
 {
+	if (Combat && Combat->EquippedWeapon)
+	{
+		Combat->EquippedWeapon->Dropped();
+	}
+
 	MulticastElim();
 
 	GetWorldTimerManager().SetTimer(
@@ -534,6 +539,17 @@ void ABlasterCharacter::MulticastElim_Implementation()
 
 		StartDissolve();
 	}
+
+	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->StopMovementImmediately();
+
+	if (BlasterPlayerController)
+	{
+		DisableInput(BlasterPlayerController);
+	}
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABlasterCharacter::PlayElimMontage()
