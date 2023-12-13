@@ -54,6 +54,8 @@ public:
 	virtual void OnRep_ReplicatedMovement() override;
 
 	UFUNCTION(NetMulticast, Reliable)
+	void MulticastElim();
+
 	void Elim();
 
 	void PlayElimMontage();
@@ -159,4 +161,11 @@ private:
 	UAnimMontage* ElimMontage;
 
 	bool bElimmed = false;
+
+	FTimerHandle ElimTimer;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ElimDelay = 3.0f;
+
+	void ElimTimerFinished();
 };
