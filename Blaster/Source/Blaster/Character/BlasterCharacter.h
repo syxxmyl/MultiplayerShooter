@@ -53,7 +53,11 @@ public:
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
 	virtual void OnRep_ReplicatedMovement() override;
 
+	UFUNCTION(NetMulticast, Reliable)
 	void Elim();
+
+	void PlayElimMontage();
+	FORCEINLINE bool IsElimmed() const { return bElimmed; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -150,4 +154,9 @@ private:
 	void OnRep_Health();
 
 	ABlasterPlayerController* BlasterPlayerController;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* ElimMontage;
+
+	bool bElimmed = false;
 };
