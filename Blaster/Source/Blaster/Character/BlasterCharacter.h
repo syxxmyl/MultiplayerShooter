@@ -23,6 +23,7 @@ class UCurveFloat;
 class UParticleSystem;
 class UParticleSystemComponent;
 class USoundCue;
+class ABlasterPlayerState;
 
 
 UCLASS()
@@ -103,6 +104,8 @@ protected:
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser);
 
 	void UpdateHUDHealth();
+
+	void PollInit();
 
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -208,4 +211,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	USoundCue* ElimBotSound;
+
+	ABlasterPlayerState* BlasterPlayerState;
 };
