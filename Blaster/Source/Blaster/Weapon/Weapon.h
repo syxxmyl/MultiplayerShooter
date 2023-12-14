@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "WeaponTypes.h"
 #include "Weapon.generated.h"
 
 
@@ -82,6 +83,8 @@ public:
 
 	bool IsEmpty();
 
+	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -129,4 +132,7 @@ private:
 
 	UPROPERTY()
 	ABlasterPlayerController* BlasterOwnerController;
+
+	UPROPERTY(EditAnywhere)
+	EWeaponType WeaponType;
 };
