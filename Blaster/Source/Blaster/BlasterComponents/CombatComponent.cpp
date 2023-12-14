@@ -124,9 +124,19 @@ void UCombatComponent::FireTimerFinished()
 	}
 }
 
+bool UCombatComponent::CanFire()
+{
+	if (!EquippedWeapon)
+	{
+		return false;
+	}
+
+	return !EquippedWeapon->IsEmpty() || !bCanFire;
+}
+
 void UCombatComponent::Fire()
 {
-	if (!bCanFire)
+	if (!CanFire())
 	{
 		return;
 	}

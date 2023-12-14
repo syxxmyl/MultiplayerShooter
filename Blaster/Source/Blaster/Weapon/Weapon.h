@@ -80,6 +80,8 @@ public:
 
 	void SetHUDAmmo();
 
+	bool IsEmpty();
+
 protected:
 	virtual void BeginPlay() override;
 
