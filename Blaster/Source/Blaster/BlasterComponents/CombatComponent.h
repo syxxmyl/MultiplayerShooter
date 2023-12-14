@@ -30,6 +30,11 @@ public:
 	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
 	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
 
+	void Reload();
+
+	UFUNCTION(Server, Reliable)
+	void ServerReload();
+
 protected:
 	virtual void BeginPlay() override;
 

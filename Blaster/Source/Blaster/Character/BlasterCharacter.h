@@ -74,6 +74,8 @@ public:
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 
+	void PlayReloadMontage();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -106,6 +108,8 @@ protected:
 	void UpdateHUDHealth();
 
 	void PollInit();
+
+	void ReloadButtonPressed();
 
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -215,4 +219,7 @@ private:
 
 	UPROPERTY()
 	ABlasterPlayerState* BlasterPlayerState;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* ReloadMontage;
 };
