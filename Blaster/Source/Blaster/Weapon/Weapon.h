@@ -14,6 +14,8 @@ class UPrimitiveComponent;
 class UAnimationAsset;
 class ACasing;
 class UTexture2D;
+class ABlasterCharacter;
+class ABlasterPlayerController;
 
 
 UENUM(BlueprintType)
@@ -74,6 +76,10 @@ public:
 
 	void Dropped();
 
+	virtual void OnRep_Owner() override;
+
+	void SetHUDAmmo();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -104,4 +110,21 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACasing> CasingClass;
+
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Ammo)
+	int32 Ammo;
+
+	UFUNCTION()
+	void OnRep_Ammo();
+
+	void SpendRound();
+
+	UPROPERTY(EditAnywhere)
+	int32 MagCapacity;
+
+	UPROPERTY()
+	ABlasterCharacter* BlasterOwnerCharacter;
+
+	UPROPERTY()
+	ABlasterPlayerController* BlasterOwnerController;
 };

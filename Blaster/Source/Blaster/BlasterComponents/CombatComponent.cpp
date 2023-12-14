@@ -176,10 +176,15 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 		return;
 	}
 	
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->Dropped();
+	}
+
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
 	EquippedWeapon->SetOwner(Character);
-	
+	EquippedWeapon->SetHUDAmmo();
 	const USkeletalMeshSocket* HandSocket = Character->GetMesh()->GetSocketByName(FName("RightHandSocket"));
 	if (HandSocket)
 	{
