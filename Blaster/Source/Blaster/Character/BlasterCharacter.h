@@ -20,6 +20,9 @@ class ABlasterPlayerController;
 class UMaterialInstanceDynamic;
 class UMaterialInstance;
 class UCurveFloat;
+class UParticleSystem;
+class UParticleSystemComponent;
+class USoundCue;
 
 
 UCLASS()
@@ -64,6 +67,8 @@ public:
 
 	void PlayElimMontage();
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
+
+	virtual void Destroyed() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -191,4 +196,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Elim)
 	UMaterialInstance* DissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ElimBotEffect;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* ElimBotComponent;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* ElimBotSound;
 };
