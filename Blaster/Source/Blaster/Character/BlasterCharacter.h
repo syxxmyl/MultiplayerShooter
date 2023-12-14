@@ -69,6 +69,9 @@ public:
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
 
 	virtual void Destroyed() override;
+	
+	FORCEINLINE float GetHealth() const { return Health; }
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 
 protected:
 	virtual void BeginPlay() override;
