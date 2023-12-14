@@ -170,6 +170,7 @@ private:
 	UFUNCTION()
 	void OnRep_Health();
 
+	UPROPERTY()
 	ABlasterPlayerController* BlasterPlayerController;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
@@ -212,5 +213,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	USoundCue* ElimBotSound;
 
+	UPROPERTY()
 	ABlasterPlayerState* BlasterPlayerState;
 };
