@@ -102,8 +102,6 @@ void UCombatComponent::StartFireTimer()
 		&ThisClass::FireTimerFinished,
 		EquippedWeapon->FireDelay
 	);
-
-	AutoReload();
 }
 
 void UCombatComponent::FireTimerFinished()
@@ -118,6 +116,8 @@ void UCombatComponent::FireTimerFinished()
 	{
 		Fire();
 	}
+
+	AutoReload();
 }
 
 bool UCombatComponent::CanFire()
