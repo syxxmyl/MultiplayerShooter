@@ -679,3 +679,13 @@ void ABlasterCharacter::PlayReloadMontage()
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
+
+ECombatState ABlasterCharacter::GetCombatState() const
+{
+	if (!Combat)
+	{
+		return ECombatState::ECS_MAX;
+	}
+
+	return Combat->CombatState;
+}
