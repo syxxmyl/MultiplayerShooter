@@ -14,6 +14,7 @@
 #include "Camera/CameraComponent.h"
 #include "Blaster/Interfaces/InteractWithCrosshairsInterface.h"
 #include "TimerManager.h"
+#include "Sound/SoundCue.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -204,6 +205,8 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
 	Character->bUseControllerRotationYaw = true;
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+
+	PlayEquipWeaponSound();
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -218,6 +221,8 @@ void UCombatComponent::OnRep_EquippedWeapon()
 		}
 		Character->bUseControllerRotationYaw = true;
 		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
+
+		PlayEquipWeaponSound();
 	}
 
 	if (Character)
@@ -484,4 +489,16 @@ void UCombatComponent::UpdateAmmoValues()
 
 	OnRep_CarriedAmmo();
 	EquippedWeapon->AddAmmo(ReloadAmount);
+}
+
+void UCombatComponent::PlayEquipWeaponSound()
+{
+	if (EquippedWeapon->EquipSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			EquippedWeapon->EquipSound,
+			Character->GetActorLocation()
+		);
+	}
 }

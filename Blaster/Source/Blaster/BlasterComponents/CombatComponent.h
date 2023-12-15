@@ -144,4 +144,6 @@ private:
 	void HandleReload();
 
 	void UpdateAmmoValues();
+
+	void PlayEquipWeaponSound();
 };

@@ -17,6 +17,7 @@ class ACasing;
 class UTexture2D;
 class ABlasterCharacter;
 class ABlasterPlayerController;
+class USoundCue;
 
 
 UENUM(BlueprintType)
@@ -89,6 +90,9 @@ public:
 	FORCEINLINE int32 GetMagCapacity() const { return MagCapacity; }
 
 	void AddAmmo(int32 AmmoToAdd);
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* EquipSound;
 
 protected:
 	virtual void BeginPlay() override;
