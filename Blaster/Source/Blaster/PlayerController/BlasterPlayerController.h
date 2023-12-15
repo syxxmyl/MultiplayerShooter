@@ -26,10 +26,19 @@ public:
 	void SetHUDWeaponAmmo(int32 Ammo);
 	void SetHUDCarriedAmmo(int32 Ammo);
 
+	void SetHUDMatchCountdown(float CountdownTime);
+
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	virtual void BeginPlay() override;
+
+	void SetHUDTime();
 
 private:
 	UPROPERTY()
 	ABlasterHUD* BlasterHUD;
+
+	float MatchTime = 120.0f;
+	uint32 CountdownInt = 0;
 };
