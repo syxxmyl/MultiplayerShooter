@@ -23,7 +23,21 @@ public:
 	virtual void PlayerEliminated(ABlasterCharacter* ElimmedCharacter, ABlasterPlayerController* VictimController, ABlasterPlayerController* AttackerController);
 	virtual void RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController);
 
+	ABlasterGameMode();
+
+	UPROPERTY(EditDefaultsOnly)
+	float WarmupTime = 10.0f;
+
+	virtual void Tick(float DeltaTime) override;
+
+	float LevelStartingTime = 0.0f;
+
+protected:
+	virtual void BeginPlay() override;
+
 private:
 	UPROPERTY(EditAnywhere)
 	float ElimPlayerAddScore = 1.0f;
+
+	float CountdownTime = 0.0f;
 };
