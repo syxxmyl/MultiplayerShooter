@@ -102,6 +102,8 @@ void UCombatComponent::StartFireTimer()
 		&ThisClass::FireTimerFinished,
 		EquippedWeapon->FireDelay
 	);
+
+	AutoReload();
 }
 
 void UCombatComponent::FireTimerFinished()
@@ -207,6 +209,7 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 
 	PlayEquipWeaponSound();
+	AutoReload();
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -500,5 +503,13 @@ void UCombatComponent::PlayEquipWeaponSound()
 			EquippedWeapon->EquipSound,
 			Character->GetActorLocation()
 		);
+	}
+}
+
+void UCombatComponent::AutoReload()
+{
+	if (EquippedWeapon->IsEmpty())
+	{
+		Reload();
 	}
 }
