@@ -547,10 +547,13 @@ void ABlasterCharacter::OnRep_Health()
 
 void ABlasterCharacter::Elim()
 {
-	if (Combat && Combat->EquippedWeapon)
+	if (Combat)
 	{
-		Combat->EquippedWeapon->Dropped();
+		Combat->DropWeaon();
 	}
+
+	UpdateHUDWeaponAmmo();
+	UpdateHUDCarriedAmmo();
 
 	MulticastElim();
 
@@ -607,11 +610,6 @@ void ABlasterCharacter::MulticastElim_Implementation()
 				GetActorLocation()
 			);
 		}
-	}
-
-	if (BlasterPlayerController)
-	{
-		BlasterPlayerController->SetHUDWeaponAmmo(0);
 	}
 }
 
@@ -688,4 +686,36 @@ ECombatState ABlasterCharacter::GetCombatState() const
 	}
 
 	return Combat->CombatState;
+}
+
+void ABlasterCharacter::UpdateHUDWeaponAmmo()
+{
+	int32 AmmoAmount = 0;
+
+	if (Combat && Combat->EquippedWeapon)
+	{
+		AmmoAmount = Combat->EquippedWeapon->GetAmmo();
+	}
+
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+	if (BlasterPlayerController)
+	{
+		BlasterPlayerController->SetHUDWeaponAmmo(AmmoAmount);
+	}
+}
+
+void ABlasterCharacter::UpdateHUDCarriedAmmo()
+{
+	int32 CarriedAmmoAmount = 0;
+
+	if (Combat && Combat->EquippedWeapon)
+	{
+		CarriedAmmoAmount = Combat->GetCarriedAmmo();
+	}
+
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+	if (BlasterPlayerController)
+	{
+		BlasterPlayerController->SetHUDCarriedAmmo(CarriedAmmoAmount);
+	}
 }

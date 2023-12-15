@@ -219,6 +219,12 @@ void UCombatComponent::OnRep_EquippedWeapon()
 		Character->bUseControllerRotationYaw = true;
 		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
+
+	if (Character)
+	{
+		Character->UpdateHUDWeaponAmmo();
+		Character->UpdateHUDCarriedAmmo();
+	}
 }
 
 void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
@@ -430,6 +436,17 @@ void UCombatComponent::FinishReloading()
 	{
 		Fire();
 	}
+}
+
+void UCombatComponent::DropWeaon()
+{
+	if (!EquippedWeapon)
+	{
+		return;
+	}
+
+	EquippedWeapon->Dropped();
+	EquippedWeapon = nullptr;
 }
 
 int32 UCombatComponent::AmountToReload()

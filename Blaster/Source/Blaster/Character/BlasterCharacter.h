@@ -79,6 +79,9 @@ public:
 
 	ECombatState GetCombatState() const;
 
+	void UpdateHUDWeaponAmmo();
+	void UpdateHUDCarriedAmmo();
+
 protected:
 	virtual void BeginPlay() override;
 

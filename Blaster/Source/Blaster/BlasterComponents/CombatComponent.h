@@ -39,6 +39,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FinishReloading();
 
+	FORCEINLINE int32 GetCarriedAmmo() const { return CarriedAmmo; }
+
+	void DropWeaon();
+
 protected:
 	virtual void BeginPlay() override;
 
