@@ -62,6 +62,8 @@ protected:
 
 	void SetHUDCrosshairs(float DeltaTime);
 
+	int32 AmountToReload();
+
 private:
 	ABlasterCharacter* Character;
 	ABlasterPlayerController* Controller;
@@ -136,4 +138,6 @@ private:
 
 	UFUNCTION()
 	void HandleReload();
+
+	void UpdateAmmoValues();
 };
