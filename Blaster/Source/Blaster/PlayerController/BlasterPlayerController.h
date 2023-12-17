@@ -9,6 +9,7 @@
 
 class ABlasterHUD;
 class UCharacterOverlay;
+class ABlasterGameMode;
 
 
 /**
@@ -43,6 +44,9 @@ public:
 
 	void HandleCooldown();
 
+	float GetHUDTimeLeft();
+	int32 GetHUDSecondsLeft(float TimeLeft);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -71,7 +75,12 @@ protected:
 	void ServerCheckMatchState();
 
 	UFUNCTION(Client, Reliable)
-	void ClientJoinMidgame(FName StateOfMatch, float Warmup, float Match, float StartingTime);
+	void ClientJoinMidgame(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown);
+
+	float CooldownTime = 0.0f;
+
+	UPROPERTY()
+	ABlasterGameMode* BlasterGameMode;
 
 private:
 	UPROPERTY()

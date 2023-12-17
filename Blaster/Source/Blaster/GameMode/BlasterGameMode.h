@@ -44,6 +44,8 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float CooldownTime = 10.0f;
 
+	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
+
 protected:
 	virtual void BeginPlay() override;
 
