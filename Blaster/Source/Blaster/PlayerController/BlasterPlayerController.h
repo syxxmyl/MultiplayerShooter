@@ -41,6 +41,8 @@ public:
 
 	void SetHUDAnnouncementCountdown(float CountdownTime);
 
+	void HandleCooldown();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -95,4 +97,6 @@ private:
 
 	float WarmupTime = 0.0f;
 	float LevelStartingTime = 0.0f;
+
+	void HandleCurrentMatchState();
 };

@@ -11,6 +11,12 @@ class ABlasterCharacter;
 class ABlasterPlayerController;
 
 
+namespace MatchState
+{
+	extern BLASTER_API const FName Cooldown;
+}
+
+
 /**
  * 
  */
@@ -34,6 +40,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MatchTime = 120.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float CooldownTime = 10.0f;
 
 protected:
 	virtual void BeginPlay() override;
