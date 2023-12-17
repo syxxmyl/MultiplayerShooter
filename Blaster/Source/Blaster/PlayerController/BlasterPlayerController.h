@@ -39,6 +39,8 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void SetHUDAnnouncementCountdown(float CountdownTime);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -63,18 +65,24 @@ protected:
 
 	void HandleMatchHasStarted();
 
+	UFUNCTION(Server, Reliable)
+	void ServerCheckMatchState();
+
+	UFUNCTION(Client, Reliable)
+	void ClientJoinMidgame(FName StateOfMatch, float Warmup, float Match, float StartingTime);
+
 private:
 	UPROPERTY()
 	ABlasterHUD* BlasterHUD;
 
-	float MatchTime = 120.0f;
+	float MatchTime = 0.0f;
 	uint32 CountdownInt = 0;
 
-	UPROPERTY(ReplicatedUsing = OnRep_MatchState)
-	FName MatchState;
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentMatchState)
+	FName CurrentMatchState;
 
 	UFUNCTION()
-	void OnRep_MatchState();
+	void OnRep_CurrentMatchState();
 
 	UPROPERTY()
 	UCharacterOverlay* CharacterOverlay;
@@ -84,4 +92,7 @@ private:
 	float HUDMaxHealth;
 	float HUDScore;
 	int32 HUDDefeats;
+
+	float WarmupTime = 0.0f;
+	float LevelStartingTime = 0.0f;
 };

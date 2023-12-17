@@ -32,6 +32,9 @@ public:
 
 	float LevelStartingTime = 0.0f;
 
+	UPROPERTY(EditDefaultsOnly)
+	float MatchTime = 120.0f;
+
 protected:
 	virtual void BeginPlay() override;
 
