@@ -82,6 +82,12 @@ public:
 	void UpdateHUDWeaponAmmo();
 	void UpdateHUDCarriedAmmo();
 
+	UPROPERTY(Replicated)
+	bool bDisableGameplay = false;
+
+	FORCEINLINE UCombatComponent* GetCombat() const { return Combat; }
+	FORCEINLINE bool GetDisableGameplay() const { return bDisableGameplay; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -116,6 +122,8 @@ protected:
 	void PollInit();
 
 	void ReloadButtonPressed();
+
+	void RotateInPlace(float DeltaTime);
 
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
