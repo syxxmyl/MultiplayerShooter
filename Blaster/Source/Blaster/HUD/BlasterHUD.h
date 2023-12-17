@@ -10,6 +10,7 @@
 class UTexture2D;
 class UUserWidget;
 class UCharacterOverlay;
+class UAnnouncement;
 
 
 USTRUCT(BlueprintType)
@@ -54,11 +55,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	TSubclassOf<UUserWidget> CharacterOverlayClass;
 
+	UPROPERTY()
 	UCharacterOverlay* CharacterOverlay;
+
+	void AddCharacterOverlay();
+
+	UPROPERTY(EditAnywhere, Category = "Announcements")
+	TSubclassOf<UUserWidget> AnnouncementClass;
+
+	UPROPERTY()
+	UAnnouncement* Announcement;
+
+	void AddAnnouncement();
 
 protected:
 	virtual void BeginPlay() override;
-	void AddCharacterOverlay();
 
 private:
 	FHUDPackage HUDPackage;

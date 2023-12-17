@@ -35,6 +35,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void OnMatchStateSet() override;
+
 private:
 	UPROPERTY(EditAnywhere)
 	float ElimPlayerAddScore = 1.0f;
