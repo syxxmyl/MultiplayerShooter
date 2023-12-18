@@ -11,6 +11,7 @@ class UStaticMeshComponent;
 class UPrimitiveComponent;
 class UNiagaraSystem;
 class UNiagaraComponent;
+class URocketMovementComponent;
 
 
 /**
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	USoundAttenuation* LoopingSoundAttenuation;
+
+	UPROPERTY(VisibleAnywhere)
+	URocketMovementComponent* RocketMovementComponent;
 
 private:
 	UPROPERTY(EditDefaultsOnly)
