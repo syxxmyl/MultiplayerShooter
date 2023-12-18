@@ -5,6 +5,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 
 void AHitScanWeapon::Fire(const FVector& HitTarget)
@@ -17,54 +18,69 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
 		return;
 	}
 
-	AController* InstigatorController = OwnerPawn->GetController();
-	if (!InstigatorController)
+	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName("MuzzleFlash");
+	if (!MuzzleFlashSocket)
 	{
 		return;
 	}
 
-	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName("MuzzleFlash");
-	if (MuzzleFlashSocket)
+	FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
+	FVector Start = SocketTransform.GetLocation();
+	FVector End = Start + (HitTarget - Start) * 1.25f;
+
+	FHitResult FireHit;
+	UWorld* World = GetWorld();
+	if (!World)
 	{
-		FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
-		FVector Start = SocketTransform.GetLocation();
-		FVector End = Start + (HitTarget - Start) * 1.25f;
+		return;
+	}
+	World->LineTraceSingleByChannel(
+		FireHit,
+		Start,
+		End,
+		ECollisionChannel::ECC_Visibility
+	);
 
-		FHitResult FireHit;
-		UWorld* World = GetWorld();
-		if (World)
+	FVector BeamEnd = End;
+	if (FireHit.bBlockingHit)
+	{
+		BeamEnd = FireHit.ImpactPoint;
+
+		ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
+		AController* InstigatorController = OwnerPawn->GetController();
+		if (BlasterCharacter && HasAuthority() && InstigatorController)
 		{
-			World->LineTraceSingleByChannel(
-				FireHit,
-				Start,
-				End,
-				ECollisionChannel::ECC_Visibility
+			UGameplayStatics::ApplyDamage(
+				BlasterCharacter,
+				Damage,
+				InstigatorController,
+				this,
+				UDamageType::StaticClass()
 			);
+		}
 
-			if (FireHit.bBlockingHit)
-			{
-				ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
-				if (BlasterCharacter && HasAuthority())
-				{
-					UGameplayStatics::ApplyDamage(
-						BlasterCharacter,
-						Damage,
-						InstigatorController,
-						this,
-						UDamageType::StaticClass()
-					);
-				}
+		if (ImpactParticles)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(
+				World,
+				ImpactParticles,
+				FireHit.ImpactPoint,
+				FireHit.ImpactNormal.Rotation()
+			);
+		}
+	}
 
-				if (ImpactParticles)
-				{
-					UGameplayStatics::SpawnEmitterAtLocation(
-						World,
-						ImpactParticles,
-						FireHit.ImpactPoint,
-						FireHit.ImpactNormal.Rotation()
-					);
-				}
-			}
+	if (BeamParicles)
+	{
+		UParticleSystemComponent* Beam = UGameplayStatics::SpawnEmitterAtLocation(
+			World,
+			BeamParicles,
+			SocketTransform
+		);
+
+		if (Beam)
+		{
+			Beam->SetVectorParameter(FName("Target"), BeamEnd);
 		}
 	}
 }
