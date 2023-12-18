@@ -147,4 +147,7 @@ private:
 	void PlayEquipWeaponSound();
 
 	void AutoReload();
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingRocketAmmo = 8;
 };
