@@ -9,6 +9,8 @@
 
 class UStaticMeshComponent;
 class UPrimitiveComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 
 /**
@@ -22,8 +24,29 @@ class BLASTER_API AProjectileRocket : public AProjectile
 public:
 	AProjectileRocket();
 
+	virtual void Destroyed() override;
+
 protected:
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* TrailSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* TrailSystemComponent;
+
+	void DestroyTimerFinished();
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* ProjectileLoop;
+
+	UPROPERTY()
+	UAudioComponent* ProjectileLoopComponent;
+
+	UPROPERTY(EditAnywhere)
+	USoundAttenuation* LoopingSoundAttenuation;
 
 private:
 	UPROPERTY(EditDefaultsOnly)
@@ -40,4 +63,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* RocketMesh;
+
+	FTimerHandle DestroyTimer;
+
+	UPROPERTY(EditAnywhere)
+	float DetroyTime = 3.0f;
 };
