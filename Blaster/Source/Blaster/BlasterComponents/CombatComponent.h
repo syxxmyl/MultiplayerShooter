@@ -156,4 +156,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingShotgunAmmo = 10;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingSniperRifleAmmo = 5;
 };
