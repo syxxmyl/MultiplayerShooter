@@ -8,6 +8,7 @@
 
 
 class UParticleSystem;
+class USoundCue;
 
 
 /**
@@ -30,4 +31,13 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* BeamParicles;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* MuzzleFlash;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* FireSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* HitSound;
 };
