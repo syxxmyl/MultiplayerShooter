@@ -86,9 +86,6 @@ private:
 
 	bool bFireButtonPressed;
 
-	UPROPERTY(EditAnywhere)
-	float TraceLength{ 80000.0f };
-
 	float CrosshairVelocityFactor;
 	float CrosshairInAirFactor;
 	float CrosshairAimFactor;
@@ -156,4 +153,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingSMGAmmo = 40;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingShotgunAmmo = 10;
 };
