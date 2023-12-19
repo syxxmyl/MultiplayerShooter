@@ -71,12 +71,19 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UCombatComponent::SetAiming(bool bAiming)
 {
+	if (!Character || !EquippedWeapon)
+	{
+		return;
+	}
+
 	bIsAiming = bAiming;
 	ServerSetAiming(bAiming);
 
-	if (Character)
+	Character->GetCharacterMovement()->MaxWalkSpeed = bAiming ? AimWalkSpeed : BaseWalkSpeed;
+
+	if (Character->IsLocallyControlled() && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
 	{
-		Character->GetCharacterMovement()->MaxWalkSpeed = bAiming ? AimWalkSpeed : BaseWalkSpeed;
+		Character->ShowSniperScopeWidget(bIsAiming);
 	}
 }
 
