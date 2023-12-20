@@ -83,6 +83,7 @@ public:
 	void SetHUDAmmo();
 
 	bool IsEmpty();
+	bool IsFull();
 
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 
