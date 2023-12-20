@@ -12,6 +12,10 @@ class UProjectileMovementComponent;
 class UParticleSystem;
 class UParticleSystemComponent;
 class USoundCue;
+class UStaticMeshComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
+
 
 UCLASS()
 class BLASTER_API AProjectile : public AActor
@@ -44,10 +48,44 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* TrailSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* TrailSystemComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	UStaticMeshComponent* ProjectileMesh;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MinimumDamage = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DamageInnerRadius = 200.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DamageOuterRadius = 500.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DamageFalloff = 1.0f;
+
+	void SpawnTrailSystem();
+
+	void DestroyTimerFinished();
+
+	void StartDestroyTimer();
+
+	void ExplodeDamage();
+
 private:
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* Tracer;
 
 	UPROPERTY()
 	UParticleSystemComponent* TracerComponent;
+
+	FTimerHandle DestroyTimer;
+
+	UPROPERTY(EditAnywhere)
+	float DetroyTime = 3.0f;
 };
