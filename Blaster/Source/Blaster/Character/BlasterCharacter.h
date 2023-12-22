@@ -93,6 +93,8 @@ public:
 
 	FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage; }
 
+	void PlayThrowGrenadeMontage();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -129,6 +131,8 @@ protected:
 	void ReloadButtonPressed();
 
 	void RotateInPlace(float DeltaTime);
+
+	void GrenadeButtonPressed();
 
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -241,4 +245,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	UAnimMontage* ReloadMontage;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* ThrowGrenadeMontage;
 };

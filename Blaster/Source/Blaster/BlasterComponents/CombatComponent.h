@@ -53,6 +53,9 @@ public:
 
 	void JumpToShotgunEnd();
 
+	UFUNCTION(BlueprintCallable)
+	void ThrowGrenadeFinished();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -73,6 +76,11 @@ protected:
 	void SetHUDCrosshairs(float DeltaTime);
 
 	int32 AmountToReload();
+
+	void ThorwGrenade();
+
+	UFUNCTION(Server, Reliable)
+	void ServerThrowGrenade();
 
 private:
 	ABlasterCharacter* Character;
