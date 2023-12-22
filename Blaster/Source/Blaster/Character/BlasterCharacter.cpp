@@ -61,6 +61,10 @@ ABlasterCharacter::ABlasterCharacter()
 	FireWeaponMontage = CreateDefaultSubobject<UAnimMontage>(TEXT("FireWeaponMontage"));
 
 	DissolveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DissolveTimeline"));
+
+	AttachedGrenade = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AttachedGrenade"));
+	AttachedGrenade->SetupAttachment(GetMesh(), FName("GrenadeSocket"));
+	AttachedGrenade->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABlasterCharacter::Destroyed()

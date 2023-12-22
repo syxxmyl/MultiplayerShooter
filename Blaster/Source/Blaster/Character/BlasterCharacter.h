@@ -248,4 +248,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	UAnimMontage* ThrowGrenadeMontage;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* AttachedGrenade;
 };
