@@ -602,6 +602,11 @@ void ABlasterCharacter::SimProxiesTurn()
 
 void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
 {
+	if (bElimmed)
+	{
+		return;
+	}
+
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 	OnRep_Health();
 

@@ -47,6 +47,8 @@ public:
 	float GetHUDTimeLeft();
 	int32 GetHUDSecondsLeft(float TimeLeft);
 
+	void SetHUDGrenades(int32 Grenades);
+
 protected:
 	virtual void BeginPlay() override;
 

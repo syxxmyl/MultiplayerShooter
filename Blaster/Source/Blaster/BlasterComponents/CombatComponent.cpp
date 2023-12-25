@@ -67,6 +67,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, EquippedWeapon);
 	DOREPLIFETIME(UCombatComponent, bIsAiming);
 	DOREPLIFETIME(UCombatComponent, CombatState);
+	DOREPLIFETIME(UCombatComponent, Grenades);
 
 	DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
 }
@@ -635,22 +636,30 @@ void UCombatComponent::ServerLaunchGrenade_Implementation(const FVector_NetQuant
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = Character;
 		SpawnParams.Instigator = Character;
+		FVector SpawnLocation = StartingLocation + ToTarget.Normalize() * 20;
 
 		UWorld* World = GetWorld();
 		if (World)
 		{
 			World->SpawnActor<AProjectile>(
 				GrenadeClass,
-				StartingLocation,
+				SpawnLocation,
 				ToTarget.Rotation(),
 				SpawnParams
-				);
+			);
+
+			// DrawDebugLine(World, SpawnLocation, Target, FColor::Red, true);
 		}
 	}
 }
 
 void UCombatComponent::ThorwGrenade()
 {
+	if (Grenades == 0)
+	{
+		return;
+	}
+
 	if (CombatState != ECombatState::ECS_Unoccupied || !EquippedWeapon)
 	{
 		return;
@@ -668,16 +677,30 @@ void UCombatComponent::ThorwGrenade()
 	{
 		ServerThrowGrenade();
 	}
+
+	if (Character && Character->HasAuthority())
+	{
+		Grenades = FMath::Clamp(Grenades - 1, 0, MaxGrenades);
+		UpdateHUDGrenades();
+	}
 }
 
 void UCombatComponent::ServerThrowGrenade_Implementation()
 {
+	if (Grenades == 0)
+	{
+		return;
+	}
+
 	CombatState = ECombatState::ECS_ThrowingGrenade;
 	if (Character)
 	{
 		Character->PlayThrowGrenadeMontage();
 		AttachActorToLeftHand(EquippedWeapon);
 		ShowAttachedGrenade(true);
+
+		Grenades = FMath::Clamp(Grenades - 1, 0, MaxGrenades);
+		UpdateHUDGrenades();
 	}
 }
 
@@ -687,6 +710,26 @@ void UCombatComponent::DropEquippedWeapon()
 	{
 		EquippedWeapon->Dropped();
 	}
+}
+
+void UCombatComponent::UpdateHUDGrenades()
+{
+	if (!Character)
+	{
+		return;
+	}
+
+	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
+
+	if (Controller)
+	{
+		Controller->SetHUDGrenades(Grenades);
+	}
+}
+
+void UCombatComponent::OnRep_Grenades()
+{
+	UpdateHUDGrenades();
 }
 
 void UCombatComponent::AttachActorToRightHand(AActor* ActorToAttach)
