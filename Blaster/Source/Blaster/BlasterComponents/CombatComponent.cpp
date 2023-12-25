@@ -16,6 +16,7 @@
 #include "TimerManager.h"
 #include "Sound/SoundCue.h"
 #include "Blaster/Character/BlasterAnimInstance.h"
+#include "Blaster/Weapon/Projectile.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -619,11 +620,12 @@ void UCombatComponent::ShowAttachedGrenade(bool bShowGrenade)
 void UCombatComponent::LaunchGrenade()
 {
 	ShowAttachedGrenade(false);
+	SpawnThrowGrenadeProjectile();
 }
 
 void UCombatComponent::ThorwGrenade()
 {
-	if (CombatState != ECombatState::ECS_Unoccupied)
+	if (CombatState != ECombatState::ECS_Unoccupied || !EquippedWeapon)
 	{
 		return;
 	}
@@ -707,5 +709,28 @@ void UCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
 	if (HandSocket)
 	{
 		HandSocket->AttachActor(ActorToAttach, Character->GetMesh());
+	}
+}
+
+void UCombatComponent::SpawnThrowGrenadeProjectile()
+{
+	if (Character && Character->HasAuthority() && GrenadeClass && Character->GetAttachedGrenade())
+	{
+		const FVector StartingLocation = Character->GetAttachedGrenade()->GetComponentLocation();
+		FVector ToTarget = HitTarget - StartingLocation;
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = Character;
+		SpawnParams.Instigator = Character;
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			World->SpawnActor<AProjectile>(
+				GrenadeClass,
+				StartingLocation,
+				ToTarget.Rotation(),
+				SpawnParams
+				);
+		}
 	}
 }

@@ -13,6 +13,7 @@
 class ABlasterCharacter;
 class AWeapon;
 class ABlasterPlayerController;
+class AProjectile;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -89,6 +90,9 @@ protected:
 	void AttachActorToRightHand(AActor* ActorToAttach);
 	void UpdateCarriedAmmo();
 	void AttachActorToLeftHand(AActor* ActorToAttach);
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AProjectile> GrenadeClass;
 
 private:
 	ABlasterCharacter* Character;
@@ -187,4 +191,6 @@ private:
 	int32 StartingGrenadeLauncherAmmo = 8;
 
 	void ShowAttachedGrenade(bool bShowGrenade);
+
+	void SpawnThrowGrenadeProjectile();
 };
