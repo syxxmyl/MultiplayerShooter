@@ -56,6 +56,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ThrowGrenadeFinished();
 
+	UFUNCTION(BlueprintCallable)
+	void LaunchGrenade();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -182,4 +185,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingGrenadeLauncherAmmo = 8;
+
+	void ShowAttachedGrenade(bool bShowGrenade);
 };

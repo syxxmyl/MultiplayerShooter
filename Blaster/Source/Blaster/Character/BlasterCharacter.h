@@ -95,6 +95,8 @@ public:
 
 	void PlayThrowGrenadeMontage();
 
+	FORCEINLINE UStaticMeshComponent* GetAttachedGrenade() const { return AttachedGrenade; }
+
 protected:
 	virtual void BeginPlay() override;
 
