@@ -620,7 +620,33 @@ void UCombatComponent::ShowAttachedGrenade(bool bShowGrenade)
 void UCombatComponent::LaunchGrenade()
 {
 	ShowAttachedGrenade(false);
-	SpawnThrowGrenadeProjectile();
+	if (Character && Character->IsLocallyControlled())
+	{
+		ServerLaunchGrenade(HitTarget);
+	}
+}
+
+void UCombatComponent::ServerLaunchGrenade_Implementation(const FVector_NetQuantize& Target)
+{
+	if (Character && GrenadeClass && Character->GetAttachedGrenade())
+	{
+		const FVector StartingLocation = Character->GetAttachedGrenade()->GetComponentLocation();
+		FVector ToTarget = Target - StartingLocation;
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = Character;
+		SpawnParams.Instigator = Character;
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			World->SpawnActor<AProjectile>(
+				GrenadeClass,
+				StartingLocation,
+				ToTarget.Rotation(),
+				SpawnParams
+				);
+		}
+	}
 }
 
 void UCombatComponent::ThorwGrenade()
@@ -709,28 +735,5 @@ void UCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
 	if (HandSocket)
 	{
 		HandSocket->AttachActor(ActorToAttach, Character->GetMesh());
-	}
-}
-
-void UCombatComponent::SpawnThrowGrenadeProjectile()
-{
-	if (Character && Character->HasAuthority() && GrenadeClass && Character->GetAttachedGrenade())
-	{
-		const FVector StartingLocation = Character->GetAttachedGrenade()->GetComponentLocation();
-		FVector ToTarget = HitTarget - StartingLocation;
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = Character;
-		SpawnParams.Instigator = Character;
-
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			World->SpawnActor<AProjectile>(
-				GrenadeClass,
-				StartingLocation,
-				ToTarget.Rotation(),
-				SpawnParams
-				);
-		}
 	}
 }
