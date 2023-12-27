@@ -98,6 +98,10 @@ public:
 
 	FORCEINLINE UStaticMeshComponent* GetAttachedGrenade() const { return AttachedGrenade; }
 
+	FORCEINLINE UBuffComponent* GetBuff() const { return Buff; }
+	FORCEINLINE void SetHealth(float Amount) { Health = Amount; }
+	void UpdateHUDHealth();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -126,8 +130,6 @@ protected:
 
 	UFUNCTION()
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser);
-
-	void UpdateHUDHealth();
 
 	void PollInit();
 
@@ -198,7 +200,7 @@ private:
 	float Health = 100.0f;
 
 	UFUNCTION()
-	void OnRep_Health();
+	void OnRep_Health(float LastHealth);
 
 	UPROPERTY()
 	ABlasterPlayerController* BlasterPlayerController;

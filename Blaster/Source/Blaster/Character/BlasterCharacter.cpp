@@ -617,7 +617,8 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 	}
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-	OnRep_Health();
+	UpdateHUDHealth();
+	PlayHitReactMontage();
 
 	if (Health == 0.0f)
 	{
@@ -640,10 +641,13 @@ void ABlasterCharacter::UpdateHUDHealth()
 	}
 }
 
-void ABlasterCharacter::OnRep_Health()
+void ABlasterCharacter::OnRep_Health(float LastHealth)
 {
 	UpdateHUDHealth();
-	PlayHitReactMontage();
+	if (Health < LastHealth)
+	{
+		PlayHitReactMontage();
+	}
 }
 
 void ABlasterCharacter::Elim()
