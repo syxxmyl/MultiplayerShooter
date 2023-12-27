@@ -104,6 +104,10 @@ public:
 
 	void UpdateHUDShield();
 		
+	FORCEINLINE float GetShield() const { return Shield; }
+	FORCEINLINE float GetMaxShield() const { return MaxShield; }
+	FORCEINLINE void SetShield(float Amount) { Shield = Amount; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -265,7 +269,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxShield = 100.0f;
 
-	UPROPERTY(ReplicatedUsing = OnRep_Shield, VisibleAnywhere, Category = "Player Stats")
+	UPROPERTY(ReplicatedUsing = OnRep_Shield, EditAnywhere, Category = "Player Stats")
 	float Shield = 100.0f;
 
 	UFUNCTION()
