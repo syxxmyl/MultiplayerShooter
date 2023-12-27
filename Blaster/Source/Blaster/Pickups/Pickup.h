@@ -9,6 +9,8 @@
 
 class USphereComponent;
 class USoundCue;
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 
 UCLASS()
@@ -39,4 +41,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* PickupMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UNiagaraComponent* PickupEffectComponent;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* PickupEffect;
 };
