@@ -102,8 +102,13 @@ protected:
 	TSubclassOf<AProjectile> GrenadeClass;
 
 private:
+	UPROPERTY()
 	ABlasterCharacter* Character;
+
+	UPROPERTY()
 	ABlasterPlayerController* Controller;
+
+	UPROPERTY()
 	ABlasterHUD* HUD;
 
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)

@@ -21,6 +21,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/Weapon/WeaponTypes.h"
+#include "Blaster/BlasterComponents/BuffComponent.h"
 
 
 ABlasterCharacter::ABlasterCharacter()
@@ -65,6 +66,9 @@ ABlasterCharacter::ABlasterCharacter()
 	AttachedGrenade = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AttachedGrenade"));
 	AttachedGrenade->SetupAttachment(GetMesh(), FName("GrenadeSocket"));
 	AttachedGrenade->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	Buff = CreateDefaultSubobject<UBuffComponent>(TEXT("Buff"));
+	Buff->SetIsReplicated(true);
 }
 
 void ABlasterCharacter::Destroyed()
@@ -91,6 +95,11 @@ void ABlasterCharacter::PostInitializeComponents()
 	if (Combat)
 	{
 		Combat->Character = this;
+	}
+
+	if (Buff)
+	{
+		Buff->Character = this;
 	}
 }
 

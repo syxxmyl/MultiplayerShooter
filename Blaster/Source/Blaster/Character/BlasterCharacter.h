@@ -25,6 +25,7 @@ class UParticleSystem;
 class UParticleSystemComponent;
 class USoundCue;
 class ABlasterPlayerState;
+class UBuffComponent;
 
 
 UCLASS()
@@ -253,4 +254,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* AttachedGrenade;
+
+	UPROPERTY(VisibleAnywhere)
+	UBuffComponent* Buff;
 };
