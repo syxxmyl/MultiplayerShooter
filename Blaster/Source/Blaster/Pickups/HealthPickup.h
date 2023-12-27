@@ -4,27 +4,38 @@
 
 #include "CoreMinimal.h"
 #include "Pickup.h"
-#include "Blaster/Weapon/WeaponTypes.h"
-#include "AmmoPickup.generated.h"
+#include "HealthPickup.generated.h"
 
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 
 /**
  * 
  */
 UCLASS()
-class BLASTER_API AAmmoPickup : public APickup
+class BLASTER_API AHealthPickup : public APickup
 {
 	GENERATED_BODY()
 	
+public:
+	AHealthPickup();
+	virtual void Destroyed() override;
+
 protected:
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 private:
 	UPROPERTY(EditAnywhere)
-	int32 AmmoAmount = 30;
+	float HealAmount = 100.0f;
 
 	UPROPERTY(EditAnywhere)
-	EWeaponType WeaponType;
+	float HealingTime = 5.0f;
+
+	UPROPERTY(VisibleAnywhere)
+	UNiagaraComponent* PickupEffectComponent;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* PickupEffect;
 };
