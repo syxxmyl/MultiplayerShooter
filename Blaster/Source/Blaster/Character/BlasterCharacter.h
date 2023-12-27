@@ -102,6 +102,8 @@ public:
 	FORCEINLINE void SetHealth(float Amount) { Health = Amount; }
 	void UpdateHUDHealth();
 
+	void UpdateHUDShield();
+		
 protected:
 	virtual void BeginPlay() override;
 
@@ -259,4 +261,13 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UBuffComponent* Buff;
+
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	float MaxShield = 100.0f;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Shield, VisibleAnywhere, Category = "Player Stats")
+	float Shield = 100.0f;
+
+	UFUNCTION()
+	void OnRep_Shield(float LastShield);
 };

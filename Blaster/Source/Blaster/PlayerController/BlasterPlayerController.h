@@ -49,6 +49,8 @@ public:
 
 	void SetHUDGrenades(int32 Grenades);
 
+	void SetHUDShield(float Shield, float MaxShield);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -110,4 +112,7 @@ private:
 	float LevelStartingTime = 0.0f;
 
 	void HandleCurrentMatchState();
+
+	float HUDShield;
+	float HUDMaxShield;
 };
