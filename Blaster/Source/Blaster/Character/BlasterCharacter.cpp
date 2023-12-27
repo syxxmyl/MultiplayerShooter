@@ -178,6 +178,8 @@ void ABlasterCharacter::PollInit()
 			BlasterPlayerState->AddToDefeats(0);
 		}
 	}
+
+	CheckUpdateOverlapHUD();
 }
 
 void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -620,9 +622,17 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 		return;
 	}
 
-	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
-	UpdateHUDHealth();
-	PlayHitReactMontage();
+	if (Damage > 0.0f)
+	{
+		PlayHitReactMontage();
+	}
+
+	float DamageToHealth = ReceiveDamageToShield(Damage);
+	if (DamageToHealth > 0.0f)
+	{
+		Health = FMath::Clamp(Health - DamageToHealth, 0.0f, MaxHealth);
+		UpdateHUDHealth();
+	}
 
 	if (Health == 0.0f)
 	{
@@ -642,6 +652,10 @@ void ABlasterCharacter::UpdateHUDHealth()
 	if (BlasterPlayerController)
 	{
 		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+	else
+	{
+		bUpdateHUDHealth = true;
 	}
 }
 
@@ -852,6 +866,10 @@ void ABlasterCharacter::UpdateHUDWeaponAmmo()
 	{
 		BlasterPlayerController->SetHUDWeaponAmmo(AmmoAmount);
 	}
+	else
+	{
+		bUpdateHUDWeaponAmmo = true;
+	}
 }
 
 void ABlasterCharacter::UpdateHUDCarriedAmmo()
@@ -867,6 +885,10 @@ void ABlasterCharacter::UpdateHUDCarriedAmmo()
 	if (BlasterPlayerController)
 	{
 		BlasterPlayerController->SetHUDCarriedAmmo(CarriedAmmoAmount);
+	}
+	else
+	{
+		bUpdateHUDCarriedAmmo = true;
 	}
 }
 
@@ -886,6 +908,10 @@ void ABlasterCharacter::UpdateHUDShield()
 	{
 		BlasterPlayerController->SetHUDShield(Shield, MaxShield);
 	}
+	else
+	{
+		bUpdateHUDShield = true;
+	}
 }
 
 void ABlasterCharacter::OnRep_Shield(float LastShield)
@@ -894,5 +920,54 @@ void ABlasterCharacter::OnRep_Shield(float LastShield)
 	if (Shield < LastShield)
 	{
 		PlayHitReactMontage();
+	}
+}
+
+float ABlasterCharacter::ReceiveDamageToShield(float Damage)
+{
+	float DamageToHealth = Damage;
+	if (Shield > 0.0f && Damage > 0.0f)
+	{
+		if (Shield >= Damage)
+		{
+			Shield = FMath::Clamp(Shield - Damage, 0.0f, MaxShield);
+			DamageToHealth = 0.0f;
+		}
+		else
+		{
+			Shield = 0.0f;
+			DamageToHealth = FMath::Clamp(DamageToHealth - Shield, 0.0f, Damage);
+		}
+
+		UpdateHUDShield();
+	}
+
+	return DamageToHealth;
+}
+
+void ABlasterCharacter::CheckUpdateOverlapHUD()
+{
+	if (bUpdateHUDHealth)
+	{
+		bUpdateHUDHealth = false;
+		UpdateHUDHealth();
+	}
+
+	if (bUpdateHUDShield)
+	{
+		bUpdateHUDShield = false;
+		UpdateHUDShield();
+	}
+
+	if (bUpdateHUDWeaponAmmo)
+	{
+		bUpdateHUDWeaponAmmo = false;
+		UpdateHUDWeaponAmmo();
+	}
+
+	if (bUpdateHUDCarriedAmmo)
+	{
+		bUpdateHUDCarriedAmmo = false;
+		UpdateHUDCarriedAmmo();
 	}
 }

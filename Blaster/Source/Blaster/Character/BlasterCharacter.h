@@ -270,4 +270,12 @@ private:
 
 	UFUNCTION()
 	void OnRep_Shield(float LastShield);
+
+	float ReceiveDamageToShield(float Damage);
+
+	bool bUpdateHUDHealth = false;
+	bool bUpdateHUDShield = false;
+	bool bUpdateHUDWeaponAmmo = false;
+	bool bUpdateHUDCarriedAmmo = false;
+	void CheckUpdateOverlapHUD();
 };

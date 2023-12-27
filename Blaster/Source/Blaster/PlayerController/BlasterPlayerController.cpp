@@ -51,15 +51,33 @@ void ABlasterPlayerController::PollInit()
 
 			if (CharacterOverlay)
 			{
-				SetHUDHealth(HUDHealth, HUDMaxHealth);
-				SetHUDShield(HUDShield, HUDMaxShield);
-				SetHUDScore(HUDScore);
-				SetHUDDefeats(HUDDefeats);
-
-				ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
-				if (BlasterCharacter && BlasterCharacter->GetCombat())
+				if (bInitializeHealth)
 				{
-					SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
+					SetHUDHealth(HUDHealth, HUDMaxHealth);
+				}
+
+				if (bInitializeScore)
+				{
+					SetHUDScore(HUDScore);
+				}
+
+				if (bInitializeDefeats)
+				{
+					SetHUDDefeats(HUDDefeats);
+				}
+
+				if (bInitializeGrenades)
+				{
+					ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
+					if (BlasterCharacter && BlasterCharacter->GetCombat())
+					{
+						SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
+					}
+				}
+
+				if (bInitializeShield) 
+				{
+					SetHUDShield(HUDShield, HUDMaxShield);
 				}
 			}
 		}
@@ -95,7 +113,7 @@ void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 	}
 	else
 	{
-		bInitializeCharacterOverlay = true;
+		bInitializeHealth = true;
 		HUDHealth = Health;
 		HUDMaxHealth = MaxHealth;
 	}
@@ -115,7 +133,7 @@ void ABlasterPlayerController::SetHUDScore(float Score)
 	}
 	else
 	{
-		bInitializeCharacterOverlay = true;
+		bInitializeScore = true;
 		HUDScore = Score;
 	}
 }
@@ -134,7 +152,7 @@ void ABlasterPlayerController::SetHUDDefeats(int32 Defeats)
 	}
 	else
 	{
-		bInitializeCharacterOverlay = true;
+		bInitializeDefeats = true;
 		HUDDefeats = Defeats;
 	}
 }
@@ -281,6 +299,10 @@ void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
 		FString GrenadesText = FString::Printf(TEXT("%d"), Grenades);
 		BlasterHUD->CharacterOverlay->GrenadesText->SetText(FText::FromString(GrenadesText));
 	}
+	else
+	{
+		bInitializeGrenades = true;
+	}
 }
 
 void ABlasterPlayerController::SetHUDShield(float Shield, float MaxShield)
@@ -301,7 +323,7 @@ void ABlasterPlayerController::SetHUDShield(float Shield, float MaxShield)
 	}
 	else
 	{
-		bInitializeCharacterOverlay = true;
+		bInitializeShield = true;
 		HUDShield = Shield;
 		HUDMaxShield = MaxShield;
 	}
