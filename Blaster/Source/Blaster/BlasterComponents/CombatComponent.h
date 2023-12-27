@@ -65,6 +65,8 @@ public:
 
 	FORCEINLINE int32 GetGrenades() const { return Grenades; }
 
+	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -209,4 +211,7 @@ private:
 	void OnRep_Grenades();
 
 	void UpdateHUDGrenades();
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxCarriedAmmo = 500;
 };
