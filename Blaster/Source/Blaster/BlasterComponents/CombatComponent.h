@@ -101,6 +101,14 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AProjectile> GrenadeClass;
 
+	UFUNCTION()
+	void OnRep_SecondaryWeapon();
+
+	void EquipPrimaryWeapon(AWeapon* WeaponToEquip);
+	void EquipSecondaryWeapon(AWeapon* WeaponToEquip);
+
+	void AttachActorToBackpack(AActor* ActorToAttach);
+
 private:
 	UPROPERTY()
 	ABlasterCharacter* Character;
@@ -180,7 +188,7 @@ private:
 
 	void UpdateAmmoValues();
 
-	void PlayEquipWeaponSound();
+	void PlayEquipWeaponSound(AWeapon* WeaponToEquip);
 
 	void AutoReload();
 
@@ -222,4 +230,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AWeapon> DefaultWeaponClass;
+
+	UPROPERTY(ReplicatedUsing = OnRep_SecondaryWeapon)
+	AWeapon* SecondaryWeapon;
 };
