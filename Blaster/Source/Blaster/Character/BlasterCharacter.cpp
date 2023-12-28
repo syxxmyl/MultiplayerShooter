@@ -273,7 +273,14 @@ void ABlasterCharacter::EquipButtonPressed()
 	{
 		if (HasAuthority())
 		{
-			Combat->EquipWeapon(OverlappingWeapon);
+			if (OverlappingWeapon)
+			{
+				Combat->EquipWeapon(OverlappingWeapon);
+			}
+			else if (Combat->ShouldSwapWeapons())
+			{
+				Combat->SwapWeapons();
+			}
 		}
 		else
 		{

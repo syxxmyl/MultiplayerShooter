@@ -67,6 +67,9 @@ public:
 
 	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
 
+	void SwapWeapons();
+	bool ShouldSwapWeapons();
+
 protected:
 	virtual void BeginPlay() override;
 
