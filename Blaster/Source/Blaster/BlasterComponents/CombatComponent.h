@@ -42,7 +42,7 @@ public:
 
 	FORCEINLINE int32 GetCarriedAmmo() const { return CarriedAmmo; }
 
-	void DropWeaon();
+	void DropWeapon();
 
 	void SetAiming(bool bAiming);
 	void FireButtonPressed(bool bPressed);
@@ -219,4 +219,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 MaxCarriedAmmo = 500;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AWeapon> DefaultWeaponClass;
 };

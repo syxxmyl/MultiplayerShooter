@@ -119,8 +119,11 @@ void ABlasterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpawnDefaultWeapon();
+	
 	UpdateHUDHealth();
 	UpdateHUDShield();
+	UpdateHUDAmmo();
 
 	if (HasAuthority())
 	{
@@ -672,7 +675,7 @@ void ABlasterCharacter::Elim()
 {
 	if (Combat)
 	{
-		Combat->DropWeaon();
+		Combat->DropWeapon();
 	}
 
 	UpdateHUDWeaponAmmo();
@@ -969,5 +972,35 @@ void ABlasterCharacter::CheckUpdateOverlapHUD()
 	{
 		bUpdateHUDCarriedAmmo = false;
 		UpdateHUDCarriedAmmo();
+	}
+}
+
+void ABlasterCharacter::SpawnDefaultWeapon()
+{
+	ABlasterGameMode* BlasterGameMode = Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this));
+	UWorld* World = GetWorld();
+	if (BlasterGameMode && World && !bElimmed && Combat && Combat->DefaultWeaponClass)
+	{
+		AWeapon* StartingWeapon = World->SpawnActor<AWeapon>(Combat->DefaultWeaponClass);
+		if (StartingWeapon)
+		{
+			StartingWeapon->bDestroyWeapon = true;
+			Combat->EquipWeapon(StartingWeapon);
+		}
+	}
+}
+
+void ABlasterCharacter::UpdateHUDAmmo()
+{
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+	if (BlasterPlayerController && Combat && Combat->EquippedWeapon)
+	{
+		BlasterPlayerController->SetHUDCarriedAmmo(Combat->CarriedAmmo);
+		BlasterPlayerController->SetHUDWeaponAmmo(Combat->EquippedWeapon->GetAmmo());
+	}
+	else
+	{
+		bUpdateHUDCarriedAmmo = true;
+		bUpdateHUDWeaponAmmo = true;
 	}
 }

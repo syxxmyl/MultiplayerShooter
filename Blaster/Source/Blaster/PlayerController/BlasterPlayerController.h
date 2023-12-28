@@ -103,9 +103,15 @@ private:
 	UCharacterOverlay* CharacterOverlay;
 
 	float HUDHealth;
+	bool bInitializeHealth = false;
+
 	float HUDMaxHealth;
+
 	float HUDScore;
+	bool bInitializeScore = false;
+
 	int32 HUDDefeats;
+	bool bInitializeDefeats = false;
 
 	float WarmupTime = 0.0f;
 	float LevelStartingTime = 0.0f;
@@ -113,11 +119,15 @@ private:
 	void HandleCurrentMatchState();
 
 	float HUDShield;
-	float HUDMaxShield;
-
-	bool bInitializeHealth = false;
-	bool bInitializeScore = false;
-	bool bInitializeDefeats = false;
-	bool bInitializeGrenades = false;
 	bool bInitializeShield = false;
+
+	float HUDMaxShield;
+	
+	bool bInitializeGrenades = false;
+
+	int32 HUDCarriedAmmo;
+	bool bInitializeCarriedAmmo = false;
+
+	int32 HUDWeaponAmmo;
+	bool bInitializeWeaponAmmo = false;
 };

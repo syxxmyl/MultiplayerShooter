@@ -108,6 +108,10 @@ public:
 	FORCEINLINE float GetMaxShield() const { return MaxShield; }
 	FORCEINLINE void SetShield(float Amount) { Shield = Amount; }
 
+	void SpawnDefaultWeapon();
+
+	void UpdateHUDAmmo();
+
 protected:
 	virtual void BeginPlay() override;
 

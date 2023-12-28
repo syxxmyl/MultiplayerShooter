@@ -487,7 +487,7 @@ void UCombatComponent::FinishReloading()
 	}
 }
 
-void UCombatComponent::DropWeaon()
+void UCombatComponent::DropWeapon()
 {
 	if (!EquippedWeapon)
 	{
@@ -495,6 +495,11 @@ void UCombatComponent::DropWeaon()
 	}
 
 	EquippedWeapon->Dropped();
+	if (EquippedWeapon->bDestroyWeapon)
+	{
+		EquippedWeapon->Destroy();
+	}
+	
 	EquippedWeapon = nullptr;
 }
 
