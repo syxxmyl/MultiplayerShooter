@@ -773,7 +773,7 @@ void ABlasterCharacter::UpdateDissolveMaterial(float DissolveValue)
 		DynamicDissolveMaterialInstance->SetScalarParameterValue(TEXT("Dissolve"), DissolveValue);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("DissolveValue: %f"), DissolveValue);
+	// UE_LOG(LogTemp, Warning, TEXT("DissolveValue: %f"), DissolveValue);
 }
 
 void ABlasterCharacter::StartDissolve()
