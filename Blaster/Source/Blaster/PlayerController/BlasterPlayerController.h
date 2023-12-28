@@ -86,6 +86,10 @@ protected:
 	UPROPERTY()
 	ABlasterGameMode* BlasterGameMode;
 
+	void HighPingWarning();
+	void StopHighPingWarning();
+	void CheckPing(float DeltaTime);
+
 private:
 	UPROPERTY()
 	ABlasterHUD* BlasterHUD;
@@ -130,4 +134,16 @@ private:
 
 	int32 HUDWeaponAmmo;
 	bool bInitializeWeaponAmmo = false;
+
+	float HighPingRunningTime = 0.0f;
+	float PingAnimationRunningTime = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float HighPingDuration = 5.0f;
+
+	UPROPERTY(EditAnywhere)
+	float CheckPingFrequency = 20.0f;
+
+	UPROPERTY(EditAnywhere)
+	float HighPingThreshold = 50.0f;
 };

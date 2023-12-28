@@ -9,6 +9,9 @@
 
 class UProgressBar;
 class UTextBlock;
+class UImage;
+class UWidgetAnimation;
+
 
 /**
  * 
@@ -48,4 +51,10 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ShieldText;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* HighPingImage;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* HighPingAnimation;
 };
