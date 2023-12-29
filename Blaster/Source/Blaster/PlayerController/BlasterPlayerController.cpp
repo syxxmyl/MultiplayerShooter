@@ -70,11 +70,7 @@ void ABlasterPlayerController::PollInit()
 
 				if (bInitializeGrenades)
 				{
-					ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
-					if (BlasterCharacter && BlasterCharacter->GetCombat())
-					{
-						SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
-					}
+					SetHUDGrenades(HUDGrenades);
 				}
 
 				if (bInitializeShield) 
@@ -324,6 +320,7 @@ void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
 	else
 	{
 		bInitializeGrenades = true;
+		HUDGrenades = Grenades;
 	}
 }
 

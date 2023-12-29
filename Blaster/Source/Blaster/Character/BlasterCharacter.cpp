@@ -124,6 +124,7 @@ void ABlasterCharacter::BeginPlay()
 	UpdateHUDHealth();
 	UpdateHUDShield();
 	UpdateHUDAmmo();
+	UpdateHUDGrenades();
 
 	if (HasAuthority())
 	{
@@ -980,6 +981,12 @@ void ABlasterCharacter::CheckUpdateOverlapHUD()
 		bUpdateHUDCarriedAmmo = false;
 		UpdateHUDCarriedAmmo();
 	}
+
+	if (bUpdateHUDGrenades)
+	{
+		bUpdateHUDGrenades = false;
+		UpdateHUDGrenades();
+	}
 }
 
 void ABlasterCharacter::SpawnDefaultWeapon()
@@ -1009,5 +1016,18 @@ void ABlasterCharacter::UpdateHUDAmmo()
 	{
 		bUpdateHUDCarriedAmmo = true;
 		bUpdateHUDWeaponAmmo = true;
+	}
+}
+
+void ABlasterCharacter::UpdateHUDGrenades()
+{
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+	if (BlasterPlayerController && Combat && Combat->EquippedWeapon)
+	{
+		BlasterPlayerController->SetHUDGrenades(Combat->Grenades);
+	}
+	else
+	{
+		bUpdateHUDGrenades = true;
 	}
 }

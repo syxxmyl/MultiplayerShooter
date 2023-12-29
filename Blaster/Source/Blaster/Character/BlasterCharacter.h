@@ -111,6 +111,7 @@ public:
 	void SpawnDefaultWeapon();
 
 	void UpdateHUDAmmo();
+	void UpdateHUDGrenades();
 
 protected:
 	virtual void BeginPlay() override;
@@ -285,5 +286,6 @@ private:
 	bool bUpdateHUDShield = false;
 	bool bUpdateHUDWeaponAmmo = false;
 	bool bUpdateHUDCarriedAmmo = false;
+	bool bUpdateHUDGrenades = false;
 	void CheckUpdateOverlapHUD();
 };

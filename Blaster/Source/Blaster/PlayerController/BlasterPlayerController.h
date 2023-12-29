@@ -127,6 +127,7 @@ private:
 
 	float HUDMaxShield;
 	
+	int32 HUDGrenades;
 	bool bInitializeGrenades = false;
 
 	int32 HUDCarriedAmmo;
