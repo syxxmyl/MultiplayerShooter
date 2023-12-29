@@ -90,6 +90,11 @@ void UCombatComponent::SetAiming(bool bAiming)
 	{
 		Character->ShowSniperScopeWidget(bIsAiming);
 	}
+
+	if (Character->IsLocallyControlled())
+	{
+		bAimButtonPressed = bAiming;
+	}
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
@@ -98,6 +103,14 @@ void UCombatComponent::ServerSetAiming_Implementation(bool bAiming)
 	if (Character)
 	{
 		Character->GetCharacterMovement()->MaxWalkSpeed = bAiming ? AimWalkSpeed : BaseWalkSpeed;
+	}
+}
+
+void UCombatComponent::OnRep_Aiming()
+{
+	if (Character && Character->IsLocallyControlled())
+	{
+		bIsAiming = bAimButtonPressed;
 	}
 }
 
