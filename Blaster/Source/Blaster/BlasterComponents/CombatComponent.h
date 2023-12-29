@@ -70,6 +70,8 @@ public:
 	void SwapWeapons();
 	bool ShouldSwapWeapons();
 
+	FORCEINLINE bool GetLocallyReloading() const { return bLocallyReloading; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -253,4 +255,6 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_SecondaryWeapon)
 	AWeapon* SecondaryWeapon;
+
+	bool bLocallyReloading = false;
 };

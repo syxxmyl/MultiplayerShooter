@@ -113,6 +113,8 @@ public:
 	void UpdateHUDAmmo();
 	void UpdateHUDGrenades();
 
+	bool IsLocallyReloading();
+
 protected:
 	virtual void BeginPlay() override;
 

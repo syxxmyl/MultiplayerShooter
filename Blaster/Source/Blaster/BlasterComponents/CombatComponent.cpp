@@ -152,6 +152,11 @@ bool UCombatComponent::CanFire()
 		return false;
 	}
 
+	if (bLocallyReloading)
+	{
+		return false;
+	}
+
 	if (!EquippedWeapon->IsEmpty() && 
 		bCanFire && 
 		CombatState == ECombatState::ECS_Reloading && 
@@ -605,9 +610,15 @@ void UCombatComponent::InitializeCarriedAmmo()
 
 void UCombatComponent::Reload()
 {
-	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied && EquippedWeapon && !EquippedWeapon->IsFull())
+	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied && EquippedWeapon && !EquippedWeapon->IsFull() && !bLocallyReloading)
 	{
+		if (Character && Character->IsLocallyControlled())
+		{
+			HandleReload();
+		}
+
 		ServerReload();
+		bLocallyReloading = true;
 	}
 }
 
@@ -616,13 +627,19 @@ void UCombatComponent::ServerReload_Implementation()
 	if (Character)
 	{
 		CombatState = ECombatState::ECS_Reloading;
-		HandleReload();
+		if (Character && !Character->IsLocallyControlled())
+		{
+			HandleReload();
+		}
 	}
 }
 
 void UCombatComponent::HandleReload()
 {
-	Character->PlayReloadMontage();
+	if (Character)
+	{
+		Character->PlayReloadMontage();
+	}
 }
 
 void UCombatComponent::OnRep_CombatState()
@@ -639,7 +656,10 @@ void UCombatComponent::OnRep_CombatState()
 	}
 	case ECombatState::ECS_Reloading:
 	{
-		HandleReload();
+		if (Character && !Character->IsLocallyControlled())
+		{
+			HandleReload();
+		}
 		break;
 	}
 	case ECombatState::ECS_ThrowingGrenade:
@@ -661,6 +681,8 @@ void UCombatComponent::FinishReloading()
 	{
 		return;
 	}
+
+	bLocallyReloading = false;
 
 	if (Character->HasAuthority())
 	{

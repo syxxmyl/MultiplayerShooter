@@ -1031,3 +1031,13 @@ void ABlasterCharacter::UpdateHUDGrenades()
 		bUpdateHUDGrenades = true;
 	}
 }
+
+bool ABlasterCharacter::IsLocallyReloading()
+{
+	if (!Combat)
+	{
+		return false;
+	}
+
+	return Combat->GetLocallyReloading();
+}
