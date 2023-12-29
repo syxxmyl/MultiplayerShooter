@@ -157,19 +157,62 @@ void UCombatComponent::Fire()
 	}
 
 	bCanFire = false;
-	ServerFire(HitTarget);
-	
-	if (Character && Character->IsLocallyControlled() && !Character->HasAuthority())
-	{
-		LocalFire(HitTarget);
-	}
 
 	if (EquippedWeapon)
 	{
 		CrosshairShootingFactor = 0.75f;
+		switch (EquippedWeapon->GetFireType())
+		{
+		case EFireType::EFT_Projectile:
+		{
+			FireProjectileWeapon();
+			break;
+		}
+		case EFireType::EFT_HitScan:
+		{
+			FireHitScanWeapon();
+			break;
+		}
+		case EFireType::EFT_Shotgun:
+		{
+			FireShotgun();
+			break;
+		}
+		}
 	}
 
 	StartFireTimer();
+}
+
+void UCombatComponent::FireProjectileWeapon()
+{
+	if (Character && Character->IsLocallyControlled() && !Character->HasAuthority())
+	{
+		LocalFire(HitTarget);
+	}
+	ServerFire(HitTarget);
+}
+
+void UCombatComponent::FireHitScanWeapon()
+{
+	if (!EquippedWeapon)
+	{
+		return;
+	}
+
+	HitTarget = EquippedWeapon->GetUseScatter() ? EquippedWeapon->TraceEndWithScatter(HitTarget) : HitTarget;
+
+	if (Character && Character->IsLocallyControlled() && !Character->HasAuthority())
+	{
+		LocalFire(HitTarget);
+	}
+	ServerFire(HitTarget);
+
+}
+
+void UCombatComponent::FireShotgun()
+{
+
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
