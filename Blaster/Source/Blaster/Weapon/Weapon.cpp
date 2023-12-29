@@ -69,7 +69,6 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWeapon, WeaponState);
-	DOREPLIFETIME(AWeapon, Ammo);
 }
 
 void AWeapon::ShowPickupWidget(bool bIsShow)
@@ -218,10 +217,7 @@ void AWeapon::Fire(const FVector& HitTarget)
 		}
 	}
 
-	if (HasAuthority())
-	{
-		SpendRound();
-	}
+	SpendRound();
 }
 
 void AWeapon::Dropped()
@@ -265,17 +261,6 @@ void AWeapon::SetHUDAmmo()
 	}
 }
 
-void AWeapon::OnRep_Ammo()
-{
-	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
-	if (BlasterOwnerCharacter && BlasterOwnerCharacter->GetCombat() && IsFull())
-	{
-		BlasterOwnerCharacter->GetCombat()->JumpToShotgunEnd();
-	}
-
-	SetHUDAmmo();
-}
-
 bool AWeapon::IsEmpty()
 {
 	return Ammo <= 0;
@@ -290,11 +275,50 @@ void AWeapon::AddAmmo(int32 AmmoToAdd)
 {
 	Ammo = FMath::Clamp(Ammo + AmmoToAdd, 0, MagCapacity);
 	SetHUDAmmo();
+	ClientAddAmmo(AmmoToAdd);
+}
+
+void AWeapon::ClientAddAmmo_Implementation(int32 AmmoToAdd)
+{
+	if (HasAuthority())
+	{
+		return;
+	}
+
+	Ammo = FMath::Clamp(Ammo + AmmoToAdd, 0, MagCapacity);
+	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
+	if (BlasterOwnerCharacter && BlasterOwnerCharacter->GetCombat() && IsFull())
+	{
+		BlasterOwnerCharacter->GetCombat()->JumpToShotgunEnd();
+	}
+	SetHUDAmmo();
 }
 
 void AWeapon::SpendRound()
 {
 	Ammo = FMath::Clamp(Ammo - 1, 0, MagCapacity);
+	SetHUDAmmo();
+
+	if (HasAuthority())
+	{
+		ClientUpdateAmmo(Ammo);
+	}
+	else
+	{
+		++UnProcessedAmmoSequence;
+	}
+}
+
+void AWeapon::ClientUpdateAmmo_Implementation(int32 ServerAmmo)
+{
+	if (HasAuthority())
+	{
+		return;
+	}
+
+	Ammo = ServerAmmo;
+	--UnProcessedAmmoSequence;
+	Ammo = FMath::Clamp(Ammo - UnProcessedAmmoSequence, 0, MagCapacity);
 	SetHUDAmmo();
 }
 
