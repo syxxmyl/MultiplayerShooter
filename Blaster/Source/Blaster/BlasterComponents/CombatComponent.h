@@ -112,6 +112,14 @@ protected:
 
 	void AttachActorToBackpack(AActor* ActorToAttach);
 
+	void LocalShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
+
+	UFUNCTION(Server, Reliable)
+	void ServerShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
+
 private:
 	UPROPERTY()
 	ABlasterCharacter* Character;
