@@ -23,6 +23,7 @@
 #include "Blaster/Weapon/WeaponTypes.h"
 #include "Blaster/BlasterComponents/BuffComponent.h"
 #include "Components/BoxComponent.h"
+#include "Blaster/BlasterComponents/LagCompensationComponent.h"
 
 
 ABlasterCharacter::ABlasterCharacter()
@@ -142,6 +143,8 @@ ABlasterCharacter::ABlasterCharacter()
 	foot_r = CreateDefaultSubobject<UBoxComponent>(TEXT("foot_r"));
 	foot_r->SetupAttachment(GetMesh(), FName("foot_r"));
 	foot_r->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	LagCompensation = CreateDefaultSubobject<ULagCompensationComponent>(TEXT("LagCompensation"));
 }
 
 void ABlasterCharacter::Destroyed()
@@ -175,6 +178,15 @@ void ABlasterCharacter::PostInitializeComponents()
 		Buff->Character = this;
 		Buff->SetInitialSpeeds(GetCharacterMovement()->MaxWalkSpeed, GetCharacterMovement()->MaxWalkSpeedCrouched);
 		Buff->SetInitialJumpVelocity(GetCharacterMovement()->JumpZVelocity);
+	}
+
+	if (LagCompensation)
+	{
+		LagCompensation->Character = this;
+		if (Controller)
+		{
+			LagCompensation->Controller = Cast<ABlasterPlayerController>(Controller);
+		}
 	}
 }
 

@@ -11,6 +11,34 @@
 #include "BlasterCharacter.generated.h"
 
 
+USTRUCT(BlueprintType)
+struct FBoxInformation
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FVector Location;
+
+	UPROPERTY()
+	FRotator Rotation;
+
+	UPROPERTY()
+	FVector BoxExtent;
+};
+
+USTRUCT(BlueprintType)
+struct FFramePackage
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	float Time;
+
+	UPROPERTY()
+	TMap<FName, FBoxInformation> HitBoxInfo;
+};
+
+
 class USpringArmComponent;
 class UCameraComponent;
 class UWidgetComponent;
@@ -27,6 +55,7 @@ class USoundCue;
 class ABlasterPlayerState;
 class UBuffComponent;
 class UBoxComponent;
+class ULagCompensationComponent;
 
 
 UCLASS()
@@ -345,4 +374,7 @@ private:
 	bool bUpdateHUDCarriedAmmo = false;
 	bool bUpdateHUDGrenades = false;
 	void CheckUpdateOverlapHUD();
+
+	UPROPERTY(VisibleAnywhere)
+	ULagCompensationComponent* LagCompensation;
 };

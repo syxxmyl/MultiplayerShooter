@@ -7,6 +7,10 @@
 #include "LagCompensationComponent.generated.h"
 
 
+class ABlasterCharacter;
+class ABlasterPlayerController;
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BLASTER_API ULagCompensationComponent : public UActorComponent
 {
@@ -14,9 +18,16 @@ class BLASTER_API ULagCompensationComponent : public UActorComponent
 
 public:	
 	ULagCompensationComponent();
+	friend class ABlasterCharacter;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	UPROPERTY()
+	ABlasterCharacter* Character;
+
+	UPROPERTY()
+	ABlasterPlayerController* Controller;
 };
