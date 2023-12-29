@@ -17,6 +17,7 @@
 #include "Sound/SoundCue.h"
 #include "Blaster/Character/BlasterAnimInstance.h"
 #include "Blaster/Weapon/Projectile.h"
+#include "Blaster/Weapon/Shotgun.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -212,7 +213,19 @@ void UCombatComponent::FireHitScanWeapon()
 
 void UCombatComponent::FireShotgun()
 {
+	if (!EquippedWeapon)
+	{
+		return;
+	}
 
+	AShotgun* Shotgun = Cast<AShotgun>(EquippedWeapon);
+	if (!Shotgun)
+	{
+		return;
+	}
+
+	TArray<FVector> HitTargets;
+	Shotgun->ShotgunTraceEndWithScatter(HitTarget, HitTargets);
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)

@@ -114,6 +114,12 @@ public:
 	FORCEINLINE bool GetUseScatter() const { return bUseScatter; }
 	FVector TraceEndWithScatter(const FVector& HitTarget);
 
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+	float DistanceToSphere = 800.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+	float SphereRadius = 75.0f;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -169,12 +175,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
-
-	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
-	float DistanceToSphere = 800.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
-	float SphereRadius = 75.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
 	bool bUseScatter = false;
