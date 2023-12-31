@@ -26,6 +26,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void SaveFramePackage(FFramePackage& Package);
+	void SaveFrameHistory();
 
 private:
 	UPROPERTY()
@@ -33,4 +34,9 @@ private:
 
 	UPROPERTY()
 	ABlasterPlayerController* Controller;
+
+	TDoubleLinkedList<FFramePackage> FrameHistory;
+
+	UPROPERTY(EditAnywhere)
+	float MaxRecordTime = 4.0f;
 };
