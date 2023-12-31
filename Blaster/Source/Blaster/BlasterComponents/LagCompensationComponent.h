@@ -9,6 +9,7 @@
 
 class ABlasterCharacter;
 class ABlasterPlayerController;
+struct FFramePackage;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -20,9 +21,11 @@ public:
 	ULagCompensationComponent();
 	friend class ABlasterCharacter;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void ShowFramePackage(const FFramePackage& Package, const FColor& Color);
 
 protected:
 	virtual void BeginPlay() override;
+	void SaveFramePackage(FFramePackage& Package);
 
 private:
 	UPROPERTY()
