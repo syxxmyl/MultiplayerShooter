@@ -153,3 +153,28 @@ void ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter
 
 	}
 }
+
+FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime)
+{
+	const float Distance = YoungerFrame.Time - OlderFrame.Time;
+	const float InterpFraction = FMath::Clamp((HitTime - OlderFrame.Time) / Distance, 0.0f, 1.0f);
+
+	FFramePackage InterpFramePackage;
+	InterpFramePackage.Time = HitTime;
+
+	for (auto& YoungerPair : YoungerFrame.HitBoxInfo)
+	{
+		const FName& BoxInfoName = YoungerPair.Key;
+		const FBoxInformation& OlderBox = OlderFrame.HitBoxInfo[BoxInfoName];
+		const FBoxInformation& YoungerBox = YoungerFrame.HitBoxInfo[BoxInfoName];
+
+		FBoxInformation InterpBoxInfo;
+		InterpBoxInfo.Location = FMath::VInterpTo(OlderBox.Location, YoungerBox.Location, 1.0f, InterpFraction);
+		InterpBoxInfo.Rotation = FMath::RInterpTo(OlderBox.Rotation, YoungerBox.Rotation, 1.0f, InterpFraction);
+		InterpBoxInfo.BoxExtent = YoungerBox.BoxExtent;
+
+		InterpFramePackage.HitBoxInfo.Add(BoxInfoName, InterpBoxInfo);
+	}
+
+	return InterpFramePackage;
+}
