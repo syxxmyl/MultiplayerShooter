@@ -202,6 +202,8 @@ public:
 	UPROPERTY()
 	TMap<FName, UBoxComponent*> HitCollisionBoxes;
 
+	FORCEINLINE ULagCompensationComponent* GetLagCompensation() const { return LagCompensation; }
+
 protected:
 	virtual void BeginPlay() override;
 
