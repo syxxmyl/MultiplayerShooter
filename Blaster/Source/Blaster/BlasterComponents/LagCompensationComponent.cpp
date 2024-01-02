@@ -83,6 +83,7 @@ void ULagCompensationComponent::SaveFramePackage(FFramePackage& Package)
 	}
 
 	Package.Time = GetWorld()->GetTimeSeconds();
+	Package.Character = Character;
 
 	for (auto& BoxPair : Character->HitCollisionBoxes)
 	{
@@ -95,7 +96,30 @@ void ULagCompensationComponent::SaveFramePackage(FFramePackage& Package)
 	}
 }
 
+FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(const TArray<FFramePackage>& FramePackages, const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocation)
+{
+	return FShotgunServerSideRewindResult();
+}
+
+FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters, const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations, float HitTime)
+{
+	TArray<FFramePackage> FramesToCheck;
+	for (ABlasterCharacter* HitCharacter : HitCharacters)
+	{
+		FramesToCheck.Add(GetFrameToCheck(HitCharacter, HitTime));
+	}
+
+	return FShotgunServerSideRewindResult();
+}
+
 FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation, float HitTime)
+{
+	FFramePackage FrameToCheck = GetFrameToCheck(HitCharacter, HitTime);
+
+	return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+}
+
+FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime)
 {
 	bool bReturn =
 		!HitCharacter ||
@@ -105,7 +129,7 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 
 	if (bReturn)
 	{
-		return FServerSideRewindResult();
+		return FFramePackage();
 	}
 
 	bool bShouldInterpolate = true;
@@ -116,7 +140,7 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 
 	if (OldestHistoryTime > HitTime)
 	{
-		return FServerSideRewindResult();
+		return FFramePackage();
 	}
 
 	FFramePackage FrameToCheck;
@@ -148,7 +172,6 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 		}
 	}
 
-
 	if (Older->GetValue().Time == HitTime)
 	{
 		FrameToCheck = Older->GetValue();
@@ -160,7 +183,7 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 		FrameToCheck = InterpBetweenFrames(Older->GetValue(), Younger->GetValue(), HitTime);
 	}
 
-	return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+	return FrameToCheck;
 }
 
 FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime)
