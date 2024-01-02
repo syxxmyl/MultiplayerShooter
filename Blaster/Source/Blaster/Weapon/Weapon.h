@@ -120,6 +120,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
 	float SphereRadius = 75.0f;
 
+	FORCEINLINE float GetDamage() const { return Damage; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -133,6 +135,18 @@ protected:
 	virtual void OnEquipped();
 	virtual void OnEquippedSecondary();
 	virtual void OnDropped();
+
+	UPROPERTY(EditAnywhere)
+	float Damage = 20.0f;
+
+	UPROPERTY(EditAnywhere)
+	bool bUseServerSideRewind = false;
+
+	UPROPERTY()
+	ABlasterCharacter* BlasterOwnerCharacter;
+
+	UPROPERTY()
+	ABlasterPlayerController* BlasterOwnerController;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -171,12 +185,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 MagCapacity;
-
-	UPROPERTY()
-	ABlasterCharacter* BlasterOwnerCharacter;
-
-	UPROPERTY()
-	ABlasterPlayerController* BlasterOwnerController;
 
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;

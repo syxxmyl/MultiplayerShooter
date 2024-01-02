@@ -51,6 +51,8 @@ public:
 
 	void SetHUDShield(float Shield, float MaxShield);
 
+	float SingleTripTime = 0.0f;
+
 protected:
 	virtual void BeginPlay() override;
 
