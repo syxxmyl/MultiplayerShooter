@@ -8,6 +8,8 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Blaster/BlasterComponents/LagCompensationComponent.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 
 
 void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
@@ -71,16 +73,38 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 	}
 
 	AController* InstigatorController = OwnerPawn->GetController();
+	TArray<ABlasterCharacter*> HitCharacters;
+
 	for (auto HitPair : HitMap)
 	{
-		if (HitPair.Key && HasAuthority() && InstigatorController)
+		if (HitPair.Key && InstigatorController)
 		{
-			UGameplayStatics::ApplyDamage(
-				HitPair.Key,
-				Damage * HitPair.Value,
-				InstigatorController,
-				this,
-				UDamageType::StaticClass()
+			if (HasAuthority() && (!bUseServerSideRewind || OwnerPawn->IsLocallyControlled()))
+			{
+				UGameplayStatics::ApplyDamage(
+					HitPair.Key,
+					Damage * HitPair.Value,
+					InstigatorController,
+					this,
+					UDamageType::StaticClass()
+				);
+			}
+
+			HitCharacters.Add(HitPair.Key);
+		}
+	}
+
+	if (!HasAuthority() && bUseServerSideRewind)
+	{
+		BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
+		BlasterOwnerController = BlasterOwnerController == nullptr ? Cast<ABlasterPlayerController>(InstigatorController) : BlasterOwnerController;
+		if (BlasterOwnerCharacter && BlasterOwnerCharacter->IsLocallyControlled() && BlasterOwnerCharacter->GetLagCompensation() && BlasterOwnerController)
+		{
+			BlasterOwnerCharacter->GetLagCompensation()->ShotgunServerScoreRequest(
+				HitCharacters,
+				Start,
+				HitTargets,
+				BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime
 			);
 		}
 	}

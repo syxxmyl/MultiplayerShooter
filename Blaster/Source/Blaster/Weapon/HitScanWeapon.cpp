@@ -86,10 +86,12 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
 	{
 		ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
 		AController* InstigatorController = OwnerPawn->GetController();
-		if (BlasterCharacter && InstigatorController)
+
+		// server side
+		if (HasAuthority())
 		{
-			// server side and weapon not use ServerSideRewind
-			if (HasAuthority() && !bUseServerSideRewind)
+			// not use ServerSideRewind or server local character
+			if (BlasterOwnerCharacter && (!bUseServerSideRewind || BlasterOwnerCharacter->IsLocallyControlled()) && InstigatorController)
 			{
 				UGameplayStatics::ApplyDamage(
 					BlasterCharacter,
@@ -99,22 +101,25 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
 					UDamageType::StaticClass()
 				);
 			}
+		}
 
-			// client and weapon use  ServerSideRewind
-			if (!HasAuthority() && bUseServerSideRewind)
+		// client and weapon use ServerSideRewind
+		if (!HasAuthority() && bUseServerSideRewind)
+		{
+			BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
+			BlasterOwnerController = BlasterOwnerController == nullptr ? Cast<ABlasterPlayerController>(InstigatorController) : BlasterOwnerController;
+			if (BlasterOwnerCharacter && BlasterOwnerCharacter->IsLocallyControlled() && BlasterOwnerCharacter->GetLagCompensation() && BlasterOwnerController)
 			{
-				BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;
-				BlasterOwnerController = BlasterOwnerController == nullptr ? Cast<ABlasterPlayerController>(InstigatorController) : BlasterOwnerController;
-				if (BlasterOwnerCharacter && BlasterOwnerCharacter->GetLagCompensation() && BlasterOwnerController)
-					BlasterOwnerCharacter->GetLagCompensation()->ServerScoreRequest(
-						BlasterCharacter,
-						Start,
-						HitTarget,
-						BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime,
-						this
-					);
+				BlasterOwnerCharacter->GetLagCompensation()->ServerScoreRequest(
+					BlasterCharacter,
+					Start,
+					HitTarget,
+					BlasterOwnerController->GetServerTime() - BlasterOwnerController->SingleTripTime,
+					this
+				);
 			}
 		}
+		
 
 		if (ImpactParticles)
 		{

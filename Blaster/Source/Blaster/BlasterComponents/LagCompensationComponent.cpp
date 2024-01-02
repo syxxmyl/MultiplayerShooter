@@ -126,7 +126,7 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
 		EnableCharacterMeshCollision(Frame.Character, ECollisionEnabled::NoCollision);
 	}
 
-	// enable hitbox's collision
+	// enable head hitbox collision
 	for (auto& Frame : FramePackages)
 	{
 		UBoxComponent* HeadBox = Frame.Character->HitCollisionBoxes[FName("head")];
@@ -134,6 +134,7 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
 		HeadBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	}
 
+	TMap<FVector_NetQuantize, TSet<ABlasterCharacter*>> HitTargets;
 	// check head shots
 	for (auto& HitLocation : HitLocations)
 	{
@@ -158,10 +159,21 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
 			{
 				ShotgunResult.HeadShots.Emplace(BlasterCharacter, 1);
 			}
+
+			if (HitTargets.Contains(HitLocation))
+			{
+				HitTargets[HitLocation].FindOrAdd(BlasterCharacter);
+			}
+			else
+			{
+				TSet<ABlasterCharacter*> TargetSet;
+				TargetSet.Add(BlasterCharacter);
+				HitTargets.Emplace(HitLocation, TargetSet);
+			}
 		}
 	}
 
-	// enable rest hitbox's collision and disable head hitbox's collision
+	// enable rest of hitboxs collision and disable head hitbox's collision
 	for (auto& Frame : FramePackages)
 	{
 		for (auto& HitBoxPair : Frame.Character->HitCollisionBoxes)
@@ -190,9 +202,18 @@ FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(cons
 			ECollisionChannel::ECC_Visibility
 		);
 
+		// DrawDebugLine(World, TraceStart, TraceEnd, FColor::Purple, true);
+
 		ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(ConfirmHitResult.GetActor());
 		if (BlasterCharacter)
 		{
+			if (HitTargets.Contains(HitLocation))
+			{
+				if (HitTargets[HitLocation].Contains(BlasterCharacter))
+				{
+					continue;
+				}
+			}
 			if (ShotgunResult.BodyShots.Contains(BlasterCharacter))
 			{
 				ShotgunResult.BodyShots[BlasterCharacter]++;
@@ -296,6 +317,7 @@ FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitC
 		FrameToCheck = InterpBetweenFrames(Older->GetValue(), Younger->GetValue(), HitTime);
 	}
 
+	FrameToCheck.Character = HitCharacter;
 	return FrameToCheck;
 }
 
@@ -486,7 +508,7 @@ void ULagCompensationComponent::ShotgunServerScoreRequest_Implementation(const T
 
 	for (auto& HitCharacter : HitCharacters)
 	{
-		if (!HitCharacter || !HitCharacter->GetEquippedWeapon() || Character)
+		if (!HitCharacter || !HitCharacter->GetEquippedWeapon() || !Character)
 		{
 			continue;
 		}
