@@ -29,6 +29,28 @@ void AProjectileGrenade::BeginPlay()
 	ProjectileMovementComponent->OnProjectileBounce.AddDynamic(this, &ThisClass::OnBounce);
 }
 
+void AProjectileGrenade::PostEditChangeProperty(FPropertyChangedEvent& Event)
+{
+	Super::PostEditChangeProperty(Event);
+
+	FName PropertyName = Event.Property ? Event.Property->GetFName() : NAME_None;
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(AProjectileGrenade, InitialSpeed))
+	{
+		if (ProjectileMovementComponent)
+		{
+			ProjectileMovementComponent->InitialSpeed = InitialSpeed;
+			ProjectileMovementComponent->MaxSpeed = InitialSpeed;
+		}
+	}
+}
+
+void AProjectileGrenade::Destroyed()
+{
+	ExplodeDamage();
+
+	Super::Destroyed();
+}
+
 void AProjectileGrenade::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
 	if (BounceSound)
@@ -39,11 +61,4 @@ void AProjectileGrenade::OnBounce(const FHitResult& ImpactResult, const FVector&
 			GetActorLocation()
 		);
 	}
-}
-
-void AProjectileGrenade::Destroyed()
-{
-	ExplodeDamage();
-
-	Super::Destroyed();
 }
