@@ -12,6 +12,29 @@ AProjectileBullet::AProjectileBullet()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->SetIsReplicated(true);
+	ProjectileMovementComponent->InitialSpeed = InitialSpeed;
+	ProjectileMovementComponent->MaxSpeed = InitialSpeed;
+}
+
+void AProjectileBullet::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FPredictProjectilePathParams PathParams;
+	PathParams.bTraceWithChannel = true;
+	PathParams.bTraceWithCollision = true;
+	PathParams.DrawDebugTime = 5.0f;
+	PathParams.DrawDebugType = EDrawDebugTrace::ForDuration;
+	PathParams.LaunchVelocity = GetActorForwardVector() * InitialSpeed;
+	PathParams.MaxSimTime = 4.0f;
+	PathParams.ProjectileRadius = 5.0f;
+	PathParams.SimFrequency = 30.0f;
+	PathParams.StartLocation = GetActorLocation();
+	PathParams.TraceChannel = ECollisionChannel::ECC_Visibility;
+	PathParams.ActorsToIgnore.Add(this);
+
+	FPredictProjectilePathResult PathResult;
+	UGameplayStatics::PredictProjectilePath(this, PathParams, PathResult);
 }
 
 void AProjectileBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
