@@ -7,6 +7,9 @@
 #include "BlasterPlayerController.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighPingDelegate, bool, bPingTooHigh);
+
+
 class ABlasterHUD;
 class UCharacterOverlay;
 class ABlasterGameMode;
@@ -52,6 +55,8 @@ public:
 	void SetHUDShield(float Shield, float MaxShield);
 
 	float SingleTripTime = 0.0f;
+
+	FHighPingDelegate HighPingDelegate;
 
 protected:
 	virtual void BeginPlay() override;
@@ -149,4 +154,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float HighPingThreshold = 50.0f;
+
+	UFUNCTION(Server, Reliable)
+	void ServerReportPingStatus(bool bHighPing);
 };

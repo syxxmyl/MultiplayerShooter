@@ -535,10 +535,16 @@ void ABlasterPlayerController::CheckPing(float DeltaTime)
 		PlayerState = PlayerState == nullptr ? GetPlayerState<APlayerState>() : PlayerState;
 		if (PlayerState)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("PlayerState->GetCompressedPing() * 4: %d"), PlayerState->GetCompressedPing() * 4);
 			if (HighPingThreshold < PlayerState->GetCompressedPing() * 4)
 			{
 				HighPingWarning();
 				PingAnimationRunningTime = 0.0f;
+				ServerReportPingStatus(true);
+			}
+			else
+			{
+				ServerReportPingStatus(false);
 			}
 		}
 		HighPingRunningTime = 0.0f;
@@ -558,6 +564,11 @@ void ABlasterPlayerController::CheckPing(float DeltaTime)
 	{
 		StopHighPingWarning();
 	}
+}
+
+void ABlasterPlayerController::ServerReportPingStatus_Implementation(bool bHighPing)
+{
+	HighPingDelegate.Broadcast(bHighPing);
 }
 
 void ABlasterPlayerController::HighPingWarning()
