@@ -209,7 +209,7 @@ void UCombatComponent::FireProjectileWeapon()
 	{
 		LocalFire(HitTarget);
 	}
-	ServerFire(HitTarget);
+	ServerFire(HitTarget, EquippedWeapon->FireDelay);
 }
 
 void UCombatComponent::FireHitScanWeapon()
@@ -225,7 +225,7 @@ void UCombatComponent::FireHitScanWeapon()
 	{
 		LocalFire(HitTarget);
 	}
-	ServerFire(HitTarget);
+	ServerFire(HitTarget, EquippedWeapon->FireDelay);
 
 }
 
@@ -249,7 +249,7 @@ void UCombatComponent::FireShotgun()
 	{
 		LocalShotgunFire(HitTargets);
 	}
-	ServerShotgunFire(HitTargets);
+	ServerShotgunFire(HitTargets, EquippedWeapon->FireDelay);
 }
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
@@ -261,7 +261,18 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 	}
 }
 
-void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
+bool UCombatComponent::ServerFire_Validate(const FVector_NetQuantize& TraceHitTarget, float FireDelay)
+{
+	if (!EquippedWeapon)
+	{
+		return false;
+	}
+
+	bool bNearlyEqual = FMath::IsNearlyEqual(EquippedWeapon->FireDelay, FireDelay, 0.001f);
+	return bNearlyEqual;
+}
+
+void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget, float FireDelay)
 {
 	MulticastFire(TraceHitTarget);
 }
@@ -307,7 +318,18 @@ void UCombatComponent::LocalShotgunFire(const TArray<FVector_NetQuantize>& Trace
 	}
 }
 
-void UCombatComponent::ServerShotgunFire_Implementation(const TArray<FVector_NetQuantize>& TraceHitTargets)
+bool UCombatComponent::ServerShotgunFire_Validate(const TArray<FVector_NetQuantize>& TraceHitTarget, float FireDelay)
+{
+	if (!EquippedWeapon)
+	{
+		return false;
+	}
+
+	bool bNearlyEqual = FMath::IsNearlyEqual(EquippedWeapon->FireDelay, FireDelay, 0.001f);
+	return bNearlyEqual;
+}
+
+void UCombatComponent::ServerShotgunFire_Implementation(const TArray<FVector_NetQuantize>& TraceHitTargets, float FireDelay)
 {
 	MulticastShotgunFire(TraceHitTargets);
 }
