@@ -72,6 +72,12 @@ public:
 
 	FORCEINLINE bool GetLocallyReloading() const { return bLocallyReloading; }
 
+	UFUNCTION(BlueprintCallable)
+	void FinishSwap();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishSwapAttachWeapons();
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -176,6 +176,10 @@ public:
 
 	FORCEINLINE ULagCompensationComponent* GetLagCompensation() const { return LagCompensation; }
 
+	void PlaySwapMontage();
+
+	bool bFinishedSwapping = false;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -354,4 +358,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	ULagCompensationComponent* LagCompensation;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* SwapMontage;
 };
