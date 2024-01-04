@@ -794,7 +794,17 @@ void ABlasterCharacter::OnRep_Health(float LastHealth)
 	}
 }
 
-void ABlasterCharacter::Elim()
+void ABlasterCharacter::ServerLeaveGame_Implementation()
+{
+	ABlasterGameMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>();
+	BlasterPlayerState = BlasterPlayerState == nullptr ? GetPlayerState<ABlasterPlayerState>() : BlasterPlayerState;
+	if (BlasterGameMode && BlasterPlayerState)
+	{
+		BlasterGameMode->PlayerLeftGame(BlasterPlayerState);
+	}
+}
+
+void ABlasterCharacter::Elim(bool bPlayerLeftGame)
 {
 	if (Combat)
 	{
@@ -804,19 +814,13 @@ void ABlasterCharacter::Elim()
 	UpdateHUDWeaponAmmo();
 	UpdateHUDCarriedAmmo();
 
-	MulticastElim();
-
-	GetWorldTimerManager().SetTimer(
-		ElimTimer,
-		this,
-		&ThisClass::ElimTimerFinished,
-		ElimDelay
-	);
+	MulticastElim(bPlayerLeftGame);
 }
 
-void ABlasterCharacter::MulticastElim_Implementation()
+void ABlasterCharacter::MulticastElim_Implementation(bool bPlayerLeftGame)
 {
 	bElimmed = true;
+	bLeftGame = bPlayerLeftGame;
 	PlayElimMontage();
 
 	if (DissolveMaterialInstance)
@@ -872,6 +876,13 @@ void ABlasterCharacter::MulticastElim_Implementation()
 	{
 		ShowSniperScopeWidget(false);
 	}
+
+	GetWorldTimerManager().SetTimer(
+		ElimTimer,
+		this,
+		&ThisClass::ElimTimerFinished,
+		ElimDelay
+	);
 }
 
 void ABlasterCharacter::PlayElimMontage()
@@ -886,9 +897,14 @@ void ABlasterCharacter::PlayElimMontage()
 void ABlasterCharacter::ElimTimerFinished()
 {
 	ABlasterGameMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>();
-	if (BlasterGameMode)
+	if (BlasterGameMode && !bLeftGame) // server only
 	{
 		BlasterGameMode->RequestRespawn(this, Controller);
+	}
+
+	if (bLeftGame && IsLocallyControlled())
+	{
+		OnLeftGame.Broadcast();
 	}
 }
 

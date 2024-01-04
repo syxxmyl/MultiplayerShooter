@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Components/Button.h"
 #include "MultiplayerSessionsSubsystem.h"
+#include "Blaster/Character/BlasterCharacter.h"
 
 
 bool UReturnToMainMenu::Initialize()
@@ -87,6 +88,30 @@ void UReturnToMainMenu::ReturnButtonClicked()
 	}
 
 	ReturnButton->SetIsEnabled(false);
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		APlayerController* FirstPlayerController = World->GetFirstPlayerController();
+		if (FirstPlayerController)
+		{
+			ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FirstPlayerController->GetPawn());
+			if (BlasterCharacter)
+			{
+				BlasterCharacter->OnLeftGame.AddDynamic(this, &ThisClass::OnPlayerLeftGame);
+				BlasterCharacter->ServerLeaveGame();
+			}
+			else // character respawning
+			{
+				ReturnButton->SetIsEnabled(true);
+			}
+		}
+	}
+}
+
+void UReturnToMainMenu::OnPlayerLeftGame()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Receive Broadcast of OnPlayerLeftGame."));
 
 	if (MultiplayerSessionsSubsystem)
 	{

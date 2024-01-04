@@ -11,6 +11,9 @@
 #include "BlasterCharacter.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame);
+
+
 class USpringArmComponent;
 class UCameraComponent;
 class UWidgetComponent;
@@ -66,9 +69,9 @@ public:
 	virtual void OnRep_ReplicatedMovement() override;
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastElim();
+	void MulticastElim(bool bPlayerLeftGame);
 
-	void Elim();
+	void Elim(bool bPlayerLeftGame);
 
 	void PlayElimMontage();
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
@@ -179,6 +182,11 @@ public:
 	void PlaySwapMontage();
 
 	bool bFinishedSwapping = false;
+
+	FOnLeftGame OnLeftGame;
+
+	UFUNCTION(Server, Reliable)
+	void ServerLeaveGame();
 
 protected:
 	virtual void BeginPlay() override;
@@ -361,4 +369,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	UAnimMontage* SwapMontage;
+
+	bool bLeftGame = false;
 };

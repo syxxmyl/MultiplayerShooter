@@ -9,6 +9,7 @@
 
 class ABlasterCharacter;
 class ABlasterPlayerController;
+class ABlasterPlayerState;
 
 
 namespace MatchState
@@ -45,6 +46,8 @@ public:
 	float CooldownTime = 10.0f;
 
 	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
+
+	void PlayerLeftGame(ABlasterPlayerState* PlayerLeaving);
 
 protected:
 	virtual void BeginPlay() override;
