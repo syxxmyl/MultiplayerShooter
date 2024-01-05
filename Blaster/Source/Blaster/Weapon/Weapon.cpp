@@ -351,13 +351,16 @@ void AWeapon::SpendRound()
 	Ammo = FMath::Clamp(Ammo - 1, 0, MagCapacity);
 	SetHUDAmmo();
 
-	if (HasAuthority())
+	if (HasAuthority()) // server
 	{
 		ClientUpdateAmmo(Ammo);
 	}
-	else
+	else // client
 	{
-		++UnProcessedAmmoSequence;
+		if (BlasterOwnerCharacter && BlasterOwnerCharacter->IsLocallyControlled())
+		{
+			++UnProcessedAmmoSequence;
+		}
 	}
 }
 
@@ -371,6 +374,17 @@ void AWeapon::ClientUpdateAmmo_Implementation(int32 ServerAmmo)
 	Ammo = ServerAmmo;
 	--UnProcessedAmmoSequence;
 	Ammo = FMath::Clamp(Ammo - UnProcessedAmmoSequence, 0, MagCapacity);
+	SetHUDAmmo();
+}
+
+void AWeapon::ClientUpdateAmmoWhenEquipped_Implementation(int32 ServerAmmo)
+{
+	if (HasAuthority())
+	{
+		return;
+	}
+
+	Ammo = FMath::Clamp(ServerAmmo, 0, MagCapacity);
 	SetHUDAmmo();
 }
 

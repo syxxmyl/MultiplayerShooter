@@ -122,6 +122,9 @@ public:
 
 	FORCEINLINE float GetDamage() const { return Damage; }
 
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAmmoWhenEquipped(int32 ServerAmmo);
+
 protected:
 	virtual void BeginPlay() override;
 

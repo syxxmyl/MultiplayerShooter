@@ -369,6 +369,8 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 		EquipPrimaryWeapon(WeaponToEquip);
 	}
 
+	WeaponToEquip->ClientUpdateAmmoWhenEquipped(WeaponToEquip->GetAmmo());
+
 	Character->bUseControllerRotationYaw = true;
 	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 }
