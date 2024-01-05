@@ -125,6 +125,8 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ClientUpdateAmmoWhenEquipped(int32 ServerAmmo);
 
+	FORCEINLINE float GetHeadShotDamage() const { return HeadShotDamage; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -155,6 +157,9 @@ protected:
 
 	UFUNCTION()
 	void OnPingTooHigh(bool bPingTooHigh);
+
+	UPROPERTY(EditAnywhere)
+	float HeadShotDamage = 40.0f;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")

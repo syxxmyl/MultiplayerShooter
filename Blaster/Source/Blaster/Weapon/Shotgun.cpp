@@ -32,6 +32,7 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 	const FVector Start = SocketTransform.GetLocation();
 
 	TMap<ABlasterCharacter*, uint32> HitMap;
+	TMap<ABlasterCharacter*, uint32> HeadShotHitMap;
 	for (FVector_NetQuantize HitTarget : HitTargets)
 	{
 		FHitResult FireHit;
@@ -40,13 +41,27 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 		ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
 		if (BlasterCharacter)
 		{
-			if (HitMap.Contains(BlasterCharacter))
+			if (FireHit.BoneName.ToString() == FString("head"))
 			{
-				HitMap[BlasterCharacter]++;
+				if (HeadShotHitMap.Contains(BlasterCharacter))
+				{
+					HeadShotHitMap[BlasterCharacter]++;
+				}
+				else
+				{
+					HeadShotHitMap.Emplace(BlasterCharacter, 1);
+				}
 			}
 			else
 			{
-				HitMap.Emplace(BlasterCharacter, 1);
+				if (HitMap.Contains(BlasterCharacter))
+				{
+					HitMap[BlasterCharacter]++;
+				}
+				else
+				{
+					HitMap.Emplace(BlasterCharacter, 1);
+				}
 			}
 		}
 
@@ -75,22 +90,50 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 	AController* InstigatorController = OwnerPawn->GetController();
 	TArray<ABlasterCharacter*> HitCharacters;
 
+	TMap<ABlasterCharacter*, float> DamageMap;
+	// body shot
 	for (auto HitPair : HitMap)
 	{
-		if (HitPair.Key && InstigatorController)
+		if (HitPair.Key)
+		{
+			DamageMap.Emplace(HitPair.Key, HitPair.Value * Damage);
+			HitCharacters.AddUnique(HitPair.Key);
+		}
+	}
+
+	// head shot
+	for (auto HeadShotHitPair : HeadShotHitMap)
+	{
+		if (HeadShotHitPair.Key)
+		{
+			if (DamageMap.Contains(HeadShotHitPair.Key))
+			{
+				DamageMap[HeadShotHitPair.Key] += HeadShotHitPair.Value * HeadShotDamage;
+			}
+			else
+			{
+				DamageMap.Emplace(HeadShotHitPair.Key, HeadShotHitPair.Value * HeadShotDamage);
+			}
+
+			HitCharacters.AddUnique(HeadShotHitPair.Key);
+		}
+	}
+
+	// apply damage
+	for (auto DamagePair : DamageMap)
+	{
+		if (DamagePair.Key && InstigatorController)
 		{
 			if (HasAuthority() && (!bUseServerSideRewind || OwnerPawn->IsLocallyControlled()))
 			{
 				UGameplayStatics::ApplyDamage(
-					HitPair.Key,
-					Damage * HitPair.Value,
+					DamagePair.Key,
+					DamagePair.Value,
 					InstigatorController,
 					this,
 					UDamageType::StaticClass()
 				);
 			}
-
-			HitCharacters.Add(HitPair.Key);
 		}
 	}
 

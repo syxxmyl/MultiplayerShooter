@@ -52,6 +52,10 @@ void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& Hi
 			}
 		}
 	}
+	else
+	{
+		OutHit.ImpactPoint = End;
+	}
 }
 
 void AHitScanWeapon::Fire(const FVector& HitTarget)
@@ -93,9 +97,11 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
 			// not use ServerSideRewind or server local character
 			if (BlasterOwnerCharacter && (!bUseServerSideRewind || BlasterOwnerCharacter->IsLocallyControlled()) && InstigatorController)
 			{
+				const float DamageToCause = FireHit.BoneName.ToString() == FString("head") ? HeadShotDamage : Damage;
+
 				UGameplayStatics::ApplyDamage(
 					BlasterCharacter,
-					Damage,
+					DamageToCause,
 					InstigatorController,
 					this,
 					UDamageType::StaticClass()
