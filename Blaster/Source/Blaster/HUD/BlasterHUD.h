@@ -11,6 +11,8 @@ class UTexture2D;
 class UUserWidget;
 class UCharacterOverlay;
 class UAnnouncement;
+class UElimAnnouncement;
+class APlayerController;
 
 
 USTRUCT(BlueprintType)
@@ -68,6 +70,8 @@ public:
 
 	void AddAnnouncement();
 
+	void AddElimAnnouncement(FString Attacker, FString Victim);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -78,4 +82,13 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float CrosshairSpreadMax = 16.0f;
+
+	UPROPERTY()
+	APlayerController* OwningPlayer;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UElimAnnouncement> ElimAnnouncementClass;
+
+	UPROPERTY()
+	UElimAnnouncement* ElimAnnouncementWidget;
 };
