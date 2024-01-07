@@ -127,6 +127,9 @@ public:
 
 	FORCEINLINE float GetHeadShotDamage() const { return HeadShotDamage; }
 
+	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
+	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
+
 protected:
 	virtual void BeginPlay() override;
 

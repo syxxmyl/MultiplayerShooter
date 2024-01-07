@@ -200,6 +200,8 @@ public:
 
 	void SetTeamColor(ETeam Team);
 
+	FORCEINLINE bool IsHoldingTheFlag();
+
 protected:
 	virtual void BeginPlay() override;
 

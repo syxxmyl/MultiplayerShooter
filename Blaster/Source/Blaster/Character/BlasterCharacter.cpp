@@ -1261,3 +1261,13 @@ void ABlasterCharacter::SetTeamColor(ETeam Team)
 	}
 	}
 }
+
+bool ABlasterCharacter::IsHoldingTheFlag()
+{
+	if (Combat)
+	{
+		return Combat->bHoldingTheFlag;
+	}
+
+	return false;
+}

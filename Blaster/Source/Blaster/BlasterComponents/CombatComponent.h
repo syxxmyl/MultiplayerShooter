@@ -263,4 +263,6 @@ private:
 	AWeapon* SecondaryWeapon;
 
 	bool bLocallyReloading = false;
+
+	bool bHoldingTheFlag = false;
 };
