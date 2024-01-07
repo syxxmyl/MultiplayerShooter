@@ -185,4 +185,5 @@ private:
 	UReturnToMainMenu* ReturnToMainMenu;
 
 	bool bReturnToMainMenuOpen = false;
+	bool bInitializeTeamScore = false;
 };

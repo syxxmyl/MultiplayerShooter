@@ -89,6 +89,10 @@ void ABlasterPlayerController::PollInit()
 				{
 					SetHUDWeaponAmmo(HUDWeaponAmmo);
 				}
+				if (bInitializeTeamScore)
+				{
+					InitTeamScores();
+				}
 			}
 		}
 	}
@@ -476,6 +480,7 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 	if (HasAuthority())
 	{
 		bShowTeamScores = bTeamsMatch;
+
 		if (bTeamsMatch)
 		{
 			InitTeamScores();
@@ -750,6 +755,10 @@ void ABlasterPlayerController::InitTeamScores()
 		BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString(Zero));
 		BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText::FromString(Zero));
 		BlasterHUD->CharacterOverlay->ScoreSpacerText->SetText(FText::FromString(Spacer));
+	}
+	else
+	{
+		bInitializeTeamScore = true;
 	}
 }
 
