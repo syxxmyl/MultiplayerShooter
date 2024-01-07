@@ -34,6 +34,7 @@ class UBoxComponent;
 class ULagCompensationComponent;
 class UNiagaraSystem;
 class UNiagaraComponent;
+class ABlasterGameMode;
 
 
 UCLASS()
@@ -403,4 +404,7 @@ private:
 
 	UPROPERTY()
 	UNiagaraComponent* CrownComponent;
+
+	UPROPERTY()
+	ABlasterGameMode* BlasterGameMode;
 };
