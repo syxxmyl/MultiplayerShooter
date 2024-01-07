@@ -14,6 +14,8 @@ class ABlasterHUD;
 class UCharacterOverlay;
 class ABlasterGameMode;
 class UReturnToMainMenu;
+class ABlasterPlayerState;
+class ABlasterGameState;
 
 
 /**
@@ -116,6 +118,9 @@ protected:
 
 	UFUNCTION()
 	void OnRep_ShowTeamScores();
+
+	FString GetInfoText(const TArray<ABlasterPlayerState*>& Players);
+	FString GetTeamsInfoText(ABlasterGameState* BlasterGameState);
 
 private:
 	UPROPERTY()
