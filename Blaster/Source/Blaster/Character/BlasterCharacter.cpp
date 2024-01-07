@@ -279,6 +279,7 @@ void ABlasterCharacter::PollInit()
 		{
 			BlasterPlayerState->AddToScore(0.0f);
 			BlasterPlayerState->AddToDefeats(0);
+			SetTeamColor(BlasterPlayerState->GetTeam());
 
 			ABlasterGameState* BlasterGameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
 
@@ -1228,5 +1229,35 @@ void ABlasterCharacter::MulticastLostTheLead_Implementation()
 	if (CrownComponent)
 	{
 		CrownComponent->DestroyComponent();
+	}
+}
+
+void ABlasterCharacter::SetTeamColor(ETeam Team)
+{
+	if (!GetMesh() || !OriginalMaterial)
+	{
+		return;
+	}
+
+	switch (Team)
+	{
+	case ETeam::ET_NoTeam:
+	{
+		GetMesh()->SetMaterial(0, OriginalMaterial);
+		DissolveMaterialInstance = BlueDissolveMaterialInstance;
+		break;
+	}
+	case ETeam::ET_BlueTeam:
+	{
+		GetMesh()->SetMaterial(0, BlueMaterial);
+		DissolveMaterialInstance = BlueDissolveMaterialInstance;
+		break;
+	}
+	case ETeam::ET_RedTeam:
+	{
+		GetMesh()->SetMaterial(0, RedMaterial);
+		DissolveMaterialInstance = RedDissolveMaterialInstance;
+		break;
+	}
 	}
 }
