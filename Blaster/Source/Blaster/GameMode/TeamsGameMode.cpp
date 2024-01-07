@@ -8,6 +8,11 @@
 #include "Blaster/BlasterTypes/Team.h"
 
 
+ATeamsGameMode::ATeamsGameMode()
+{
+	bTeamsMatch = true;
+}
+
 void ATeamsGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);

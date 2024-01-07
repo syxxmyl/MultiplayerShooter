@@ -50,6 +50,8 @@ public:
 
 	void PlayerLeftGame(ABlasterPlayerState* PlayerLeaving);
 
+	bool bTeamsMatch = false;
+
 protected:
 	virtual void BeginPlay() override;
 

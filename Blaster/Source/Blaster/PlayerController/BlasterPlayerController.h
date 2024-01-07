@@ -40,7 +40,7 @@ public:
 
 	virtual void ReceivedPlayer() override;
 
-	void OnMatchStateSet(FName State);
+	void OnMatchStateSet(FName State, bool bTeamsMatch = false);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -60,6 +60,11 @@ public:
 	FHighPingDelegate HighPingDelegate;
 
 	void BroadcastElim(APlayerState* Attacker, APlayerState* Victim);
+
+	void HideTeamScores();
+	void InitTeamScores();
+	void SetHUDRedTeamScore(int32 RedScore);
+	void SetHUDBlueTeamScore(int32 BlueScore);
 
 protected:
 	virtual void BeginPlay() override;
@@ -84,7 +89,7 @@ protected:
 
 	void PollInit();
 
-	void HandleMatchHasStarted();
+	void HandleMatchHasStarted(bool bTeamsMatch = false);
 
 	UFUNCTION(Server, Reliable)
 	void ServerCheckMatchState();
@@ -105,6 +110,12 @@ protected:
 
 	UFUNCTION(Client, Reliable)
 	void ClientElimAnnouncement(APlayerState* Attacker, APlayerState* Victim);
+
+	UPROPERTY(ReplicatedUsing = OnRep_ShowTeamScores)
+	bool bShowTeamScores = false;
+
+	UFUNCTION()
+	void OnRep_ShowTeamScores();
 
 private:
 	UPROPERTY()
@@ -136,7 +147,7 @@ private:
 	float WarmupTime = 0.0f;
 	float LevelStartingTime = 0.0f;
 
-	void HandleCurrentMatchState();
+	void HandleCurrentMatchState(bool bTeamsMatch = false);
 
 	float HUDShield;
 	bool bInitializeShield = false;
