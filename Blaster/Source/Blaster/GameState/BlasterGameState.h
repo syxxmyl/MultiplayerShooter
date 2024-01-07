@@ -41,6 +41,9 @@ public:
 	UFUNCTION()
 	void OnRep_BlueTeamScore();
 
+	void AddRedTeamScores(float Score);
+	void AddBlueTeamScores(float Score);
+
 private:
 	float TopScore = 0.0f;
 };

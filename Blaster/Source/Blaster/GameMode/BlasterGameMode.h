@@ -57,9 +57,9 @@ protected:
 
 	virtual void OnMatchStateSet() override;
 
-private:
 	UPROPERTY(EditAnywhere)
 	float ElimPlayerAddScore = 1.0f;
 
+private:
 	float CountdownTime = 0.0f;
 };
