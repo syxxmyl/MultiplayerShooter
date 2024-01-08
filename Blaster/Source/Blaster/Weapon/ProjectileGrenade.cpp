@@ -29,6 +29,7 @@ void AProjectileGrenade::BeginPlay()
 	ProjectileMovementComponent->OnProjectileBounce.AddDynamic(this, &ThisClass::OnBounce);
 }
 
+#if WITH_EDITOR
 void AProjectileGrenade::PostEditChangeProperty(FPropertyChangedEvent& Event)
 {
 	Super::PostEditChangeProperty(Event);
@@ -43,6 +44,7 @@ void AProjectileGrenade::PostEditChangeProperty(FPropertyChangedEvent& Event)
 		}
 	}
 }
+#endif
 
 void AProjectileGrenade::Destroyed()
 {
