@@ -87,7 +87,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	bool bAutomatic = true;
 
-	void Dropped();
+	virtual void Dropped();
 
 	virtual void OnRep_Owner() override;
 

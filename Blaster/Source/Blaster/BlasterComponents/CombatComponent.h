@@ -78,6 +78,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FinishSwapAttachWeapons();
 
+	FORCEINLINE AWeapon* GetFlag() const { return Flag; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -128,7 +130,7 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
 
-	void AttachFlagToLeftHand(AWeapon* Flag);
+	void AttachFlagToLeftHand(AWeapon* FlagToAttach);
 
 private:
 	UPROPERTY()
@@ -271,4 +273,10 @@ private:
 
 	UFUNCTION()
 	void OnRep_HoldingTheFlag();
+
+	UPROPERTY(ReplicatedUsing = OnRep_Flag)
+	AWeapon* Flag;
+
+	UFUNCTION()
+	void OnRep_Flag();
 };

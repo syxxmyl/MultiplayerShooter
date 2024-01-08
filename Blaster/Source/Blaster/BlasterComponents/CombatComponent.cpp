@@ -71,6 +71,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, Grenades);
 	DOREPLIFETIME(UCombatComponent, SecondaryWeapon);
 	DOREPLIFETIME(UCombatComponent, bHoldingTheFlag);
+	DOREPLIFETIME(UCombatComponent, Flag);
 
 	DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
 }
@@ -363,9 +364,10 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	{
 		bHoldingTheFlag = true;
 		Character->Crouch();
-		AttachFlagToLeftHand(WeaponToEquip);
 		WeaponToEquip->SetWeaponState(EWeaponState::EWS_Equipped);
+		AttachFlagToLeftHand(WeaponToEquip);
 		WeaponToEquip->SetOwner(Character);
+		Flag = WeaponToEquip;
 	}
 	else
 	{
@@ -803,6 +805,17 @@ void UCombatComponent::DropWeapon()
 
 		SecondaryWeapon = nullptr;
 	}
+
+	if (Flag)
+	{
+		Flag->Dropped();
+		if (Flag->bDestroyWeapon)
+		{
+			Flag->Destroy();
+		}
+
+		Flag = nullptr;
+	}
 }
 
 int32 UCombatComponent::AmountToReload()
@@ -1125,9 +1138,18 @@ void UCombatComponent::OnRep_HoldingTheFlag()
 	}
 }
 
-void UCombatComponent::AttachFlagToLeftHand(AWeapon* Flag)
+void UCombatComponent::OnRep_Flag()
 {
-	if (!Character || !Character->GetMesh() || !Flag)
+	if (Character && Flag)
+	{
+		Flag->SetWeaponState(EWeaponState::EWS_Equipped);
+		AttachFlagToLeftHand(Flag);
+	}
+}
+
+void UCombatComponent::AttachFlagToLeftHand(AWeapon* FlagToAttach)
+{
+	if (!Character || !Character->GetMesh() || !FlagToAttach)
 	{
 		return;
 	}
@@ -1135,6 +1157,6 @@ void UCombatComponent::AttachFlagToLeftHand(AWeapon* Flag)
 	const USkeletalMeshSocket* FlagSocket = Character->GetMesh()->GetSocketByName(FName("FlagSocket"));
 	if (FlagSocket)
 	{
-		FlagSocket->AttachActor(Flag, Character->GetMesh());
+		FlagSocket->AttachActor(FlagToAttach, Character->GetMesh());
 	}
 }
