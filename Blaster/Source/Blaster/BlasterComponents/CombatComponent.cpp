@@ -70,6 +70,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, CombatState);
 	DOREPLIFETIME(UCombatComponent, Grenades);
 	DOREPLIFETIME(UCombatComponent, SecondaryWeapon);
+	DOREPLIFETIME(UCombatComponent, bHoldingTheFlag);
 
 	DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
 }
@@ -352,29 +353,40 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	{
 		return;
 	}
-	
+
 	if (CombatState != ECombatState::ECS_Unoccupied)
 	{
 		return;
 	}
 
-	if (EquippedWeapon && !SecondaryWeapon)
+	if (WeaponToEquip->GetWeaponType() == EWeaponType::EWT_Flg)
 	{
-		EquipSecondaryWeapon(WeaponToEquip);
-		if (SecondaryWeapon)
-		{
-			SecondaryWeapon->EnableCustomDepth(true);
-		}
+		bHoldingTheFlag = true;
+		Character->Crouch();
+		AttachFlagToLeftHand(WeaponToEquip);
+		WeaponToEquip->SetWeaponState(EWeaponState::EWS_Equipped);
+		WeaponToEquip->SetOwner(Character);
 	}
 	else
 	{
-		EquipPrimaryWeapon(WeaponToEquip);
+		if (EquippedWeapon && !SecondaryWeapon)
+		{
+			EquipSecondaryWeapon(WeaponToEquip);
+			if (SecondaryWeapon)
+			{
+				SecondaryWeapon->EnableCustomDepth(true);
+			}
+		}
+		else
+		{
+			EquipPrimaryWeapon(WeaponToEquip);
+		}
+
+		WeaponToEquip->ClientUpdateAmmoWhenEquipped(WeaponToEquip->GetAmmo());
+
+		Character->bUseControllerRotationYaw = true;
+		Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
-
-	WeaponToEquip->ClientUpdateAmmoWhenEquipped(WeaponToEquip->GetAmmo());
-
-	Character->bUseControllerRotationYaw = true;
-	Character->GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -1102,5 +1114,27 @@ void UCombatComponent::AttachActorToBackpack(AActor* ActorToAttach)
 	if (BackpackSocket)
 	{
 		BackpackSocket->AttachActor(ActorToAttach, Character->GetMesh());
+	}
+}
+
+void UCombatComponent::OnRep_HoldingTheFlag()
+{
+	if (bHoldingTheFlag && Character && Character->IsLocallyControlled())
+	{
+		Character->Crouch();
+	}
+}
+
+void UCombatComponent::AttachFlagToLeftHand(AWeapon* Flag)
+{
+	if (!Character || !Character->GetMesh() || !Flag)
+	{
+		return;
+	}
+
+	const USkeletalMeshSocket* FlagSocket = Character->GetMesh()->GetSocketByName(FName("FlagSocket"));
+	if (FlagSocket)
+	{
+		FlagSocket->AttachActor(Flag, Character->GetMesh());
 	}
 }

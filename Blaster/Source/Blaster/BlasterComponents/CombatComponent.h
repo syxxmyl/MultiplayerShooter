@@ -128,6 +128,8 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
 
+	void AttachFlagToLeftHand(AWeapon* Flag);
+
 private:
 	UPROPERTY()
 	ABlasterCharacter* Character;
@@ -264,5 +266,9 @@ private:
 
 	bool bLocallyReloading = false;
 
+	UPROPERTY(ReplicatedUsing = OnRep_HoldingTheFlag)
 	bool bHoldingTheFlag = false;
+
+	UFUNCTION()
+	void OnRep_HoldingTheFlag();
 };
