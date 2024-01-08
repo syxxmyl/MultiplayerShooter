@@ -202,6 +202,8 @@ public:
 
 	FORCEINLINE bool IsHoldingTheFlag();
 
+	ETeam GetTeam();
+
 protected:
 	virtual void BeginPlay() override;
 

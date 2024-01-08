@@ -360,7 +360,7 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 		return;
 	}
 
-	if (WeaponToEquip->GetWeaponType() == EWeaponType::EWT_Flg)
+	if (WeaponToEquip->GetWeaponType() == EWeaponType::EWT_Flag)
 	{
 		bHoldingTheFlag = true;
 		Character->Crouch();

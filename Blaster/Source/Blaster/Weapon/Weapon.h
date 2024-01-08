@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "WeaponTypes.h"
+#include "Blaster/BlasterTypes/Team.h"
 #include "Weapon.generated.h"
 
 
@@ -163,6 +164,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float HeadShotDamage = 40.0f;
+
+	UPROPERTY(EditAnywhere)
+	ETeam Team;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
