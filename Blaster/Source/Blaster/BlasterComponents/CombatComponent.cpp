@@ -806,16 +806,7 @@ void UCombatComponent::DropWeapon()
 		SecondaryWeapon = nullptr;
 	}
 
-	if (Flag)
-	{
-		Flag->Dropped();
-		if (Flag->bDestroyWeapon)
-		{
-			Flag->Destroy();
-		}
-
-		Flag = nullptr;
-	}
+	DropFlag();
 }
 
 int32 UCombatComponent::AmountToReload()
@@ -1132,9 +1123,13 @@ void UCombatComponent::AttachActorToBackpack(AActor* ActorToAttach)
 
 void UCombatComponent::OnRep_HoldingTheFlag()
 {
-	if (bHoldingTheFlag && Character && Character->IsLocallyControlled())
+	if (bHoldingTheFlag && Character)
 	{
 		Character->Crouch();
+	}
+	if (!bHoldingTheFlag && Character)
+	{
+		Character->UnCrouch();
 	}
 }
 
@@ -1158,5 +1153,19 @@ void UCombatComponent::AttachFlagToLeftHand(AWeapon* FlagToAttach)
 	if (FlagSocket)
 	{
 		FlagSocket->AttachActor(FlagToAttach, Character->GetMesh());
+	}
+}
+
+void UCombatComponent::DropFlag()
+{
+	if (Flag)
+	{
+		Flag->Dropped();
+		if (Flag->bDestroyWeapon)
+		{
+			Flag->Destroy();
+		}
+
+		Flag = nullptr;
 	}
 }

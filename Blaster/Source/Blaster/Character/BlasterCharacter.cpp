@@ -263,6 +263,12 @@ void ABlasterCharacter::RotateInPlace(float DeltaTime)
 		return;
 	}
 
+	if (Combat && Combat->EquippedWeapon)
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		bUseControllerRotationYaw = true;
+	}
+
 	if (GetLocalRole() > ENetRole::ROLE_SimulatedProxy && IsLocallyControlled())
 	{
 		AimOffset(DeltaTime);
@@ -1386,4 +1392,30 @@ ETeam ABlasterCharacter::GetTeam()
 	}
 
 	return BlasterPlayerState->GetTeam();
+}
+
+void ABlasterCharacter::SetHoldingTheFlag(bool bHolding)
+{
+	if (!Combat)
+	{
+		return;
+	}
+
+	if (!bHolding)
+	{
+		UnCrouch();
+	}
+
+	Combat->bHoldingTheFlag = bHolding;
+	
+}
+
+void ABlasterCharacter::DropFlag()
+{
+	if (!Combat)
+	{
+		return;
+	}
+
+	Combat->DropFlag();
 }

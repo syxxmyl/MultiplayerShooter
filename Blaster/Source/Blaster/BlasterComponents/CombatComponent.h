@@ -80,6 +80,8 @@ public:
 
 	FORCEINLINE AWeapon* GetFlag() const { return Flag; }
 
+	void DropFlag();
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -204,6 +204,10 @@ public:
 
 	ETeam GetTeam();
 
+	void SetHoldingTheFlag(bool bHolding);
+
+	void DropFlag();
+
 protected:
 	virtual void BeginPlay() override;
 
