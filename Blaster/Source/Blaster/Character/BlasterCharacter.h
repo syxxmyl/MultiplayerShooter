@@ -241,6 +241,9 @@ protected:
 
 	void GrenadeButtonPressed();
 
+	void SetSpawnPoint();
+	void OnPlayerStateInitialized();
+
 private:	
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;
