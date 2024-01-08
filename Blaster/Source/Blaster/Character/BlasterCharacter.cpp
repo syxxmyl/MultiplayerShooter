@@ -328,6 +328,11 @@ void ABlasterCharacter::Jump()
 		return;
 	}
 
+	if (Combat && Combat->bHoldingTheFlag)
+	{
+		return;
+	}
+
 	if (bIsCrouched)
 	{
 		UnCrouch();
@@ -387,6 +392,11 @@ void ABlasterCharacter::EquipButtonPressed()
 
 	if (Combat)
 	{
+		if (Combat->bHoldingTheFlag)
+		{
+			return;
+		}
+
 		if (HasAuthority())
 		{
 			if (OverlappingWeapon)
@@ -436,6 +446,11 @@ void ABlasterCharacter::CrouchButtonPressed()
 		return;
 	}
 
+	if (Combat && Combat->bHoldingTheFlag)
+	{
+		return;
+	}
+
 	if (bIsCrouched)
 	{
 		UnCrouch();
@@ -455,6 +470,11 @@ void ABlasterCharacter::AimButtonPressed()
 
 	if (Combat)
 	{
+		if (Combat->bHoldingTheFlag)
+		{
+			return;
+		}
+
 		Combat->SetAiming(true);
 	}
 }
@@ -468,6 +488,11 @@ void ABlasterCharacter::AimButtonReleased()
 
 	if (Combat)
 	{
+		if (Combat->bHoldingTheFlag)
+		{
+			return;
+		}
+
 		Combat->SetAiming(false);
 	}
 }
@@ -481,6 +506,11 @@ void ABlasterCharacter::FireButtonPressed()
 
 	if (Combat)
 	{
+		if (Combat->bHoldingTheFlag)
+		{
+			return;
+		}
+
 		Combat->FireButtonPressed(true);
 	}
 }
@@ -494,6 +524,11 @@ void ABlasterCharacter::FireButtonReleased()
 
 	if (Combat)
 	{
+		if (Combat->bHoldingTheFlag)
+		{
+			return;
+		}
+
 		Combat->FireButtonPressed(false);
 	}
 }
@@ -507,6 +542,11 @@ void ABlasterCharacter::ReloadButtonPressed()
 
 	if (Combat)
 	{
+		if (Combat->bHoldingTheFlag)
+		{
+			return;
+		}
+
 		Combat->Reload();
 	}
 }
@@ -515,6 +555,11 @@ void ABlasterCharacter::GrenadeButtonPressed()
 {
 	if (Combat)
 	{
+		if (Combat->bHoldingTheFlag)
+		{
+			return;
+		}
+
 		Combat->ThorwGrenade();
 	}
 }
