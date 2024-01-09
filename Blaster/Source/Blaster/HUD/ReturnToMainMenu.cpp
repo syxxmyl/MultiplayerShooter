@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "Blaster/Character/BlasterCharacter.h"
+#include "TimerManager.h"
 
 
 bool UReturnToMainMenu::Initialize()
@@ -109,18 +110,37 @@ void UReturnToMainMenu::ReturnButtonClicked()
 	}
 }
 
+void UReturnToMainMenu::LeaveTimerFinished()
+{
+	UE_LOG(LogTemp, Warning, TEXT("LeaveTimerFinished."));
+	MenuTearDown();
+	OnDestroySession(true);
+}
+
 void UReturnToMainMenu::OnPlayerLeftGame()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Receive Broadcast of OnPlayerLeftGame."));
+	UE_LOG(LogTemp, Warning, TEXT("Receive Broadcast of OnPlayerLeftGame, MultiplayerSessionsSubsystem==nullptr = %d."), MultiplayerSessionsSubsystem == nullptr);
 
 	if (MultiplayerSessionsSubsystem)
 	{
 		MultiplayerSessionsSubsystem->DestroySession();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			World->GetTimerManager().SetTimer(
+				LeaveTimer,
+				this,
+				&ThisClass::LeaveTimerFinished,
+				MaxLeaveGameWaitSessionTime
+			);
+		}
 	}
 }
 
 void UReturnToMainMenu::OnDestroySession(bool bWasSuccessful)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnDestroySession bWasSuccessful = %d."), bWasSuccessful);
 	if (!bWasSuccessful)
 	{
 		if (ReturnButton)

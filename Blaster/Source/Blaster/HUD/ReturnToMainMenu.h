@@ -46,4 +46,10 @@ private:
 
 	UPROPERTY()
 	APlayerController* PlayerController;
+
+	UPROPERTY(EditAnywhere)
+	float MaxLeaveGameWaitSessionTime = 10.0f;
+
+	FTimerHandle LeaveTimer;
+	void LeaveTimerFinished();
 };
