@@ -16,7 +16,7 @@ void UMenu::MenuSetup(int32 NumOfPublicConnection /*= 4*/, int32 NumOfMaxSearchR
 
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
-	bIsFocusable = true;
+	SetIsFocusable(true);
 
 	UWorld* World = GetWorld();
 	if (World)
@@ -183,7 +183,7 @@ void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 
 void UMenu::OnDestroySession(bool bWasSuccessful)
 {
-
+	HostButton->SetIsEnabled(true);
 }
 
 void UMenu::OnStartSession(bool bWasSuccessful)
